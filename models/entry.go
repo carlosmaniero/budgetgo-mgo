@@ -3,8 +3,9 @@ package models
 import "time"
 
 type Entry struct {
+	Id      string
 	Name    string
-	amount  float32
-	date    time.Date
-	comment string
+	Amount  float32
+	Date    time.Time
+	Comment string
 }
