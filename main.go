@@ -1,12 +1,14 @@
 package main
 
-import "github.com/carlosmaniero/budgetgo/services"
-import "github.com/carlosmaniero/budgetgo/models"
-import "fmt"
+import (
+	. "github.com/carlosmaniero/budgetgo/handlers"
+	"github.com/gorilla/mux"
+	"net/http"
+)
 
 func main() {
-	service := services.NewEntryService()
-	service.Insert(&models.Entry{})
-	_, total := service.Count()
-	fmt.Println(total)
+	r := mux.NewRouter()
+	r.HandleFunc("/", HealthCheck)
+
+	http.ListenAndServe(":3333", r)
 }
