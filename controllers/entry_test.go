@@ -34,11 +34,23 @@ func TestSpec(t *testing.T) {
 			Comment: "6 breads",
 		}
 
-		Convey("When i send the entry to the EntryController", func() {
+		Convey("When I send the entry to the EntryController", func() {
 			err := EntryCreateController(&entry)
 
-			Convey("Then the Controller raise an error", func() {
+			Convey("Then the Controller raise an creation error", func() {
 				So(err.Code, ShouldEqual, AlreadyCreatedError)
+			})
+		})
+	})
+
+	Convey("Given I've a invalid Entry", t, func() {
+		entry := Entry{}
+
+		Convey("When I send the entry to the EntryController", func() {
+			err := EntryCreateController(&entry)
+
+			Convey("Then the Controller raise a validation error", func() {
+				So(err.Code, ShouldEqual, ValidationError)
 			})
 		})
 	})
