@@ -7,7 +7,7 @@ import (
 )
 
 func EntryCreateHandler(w http.ResponseWriter, r *http.Request) {
-	data, errS := serializers.StringToEntryData(r.Body)
+	data, _ := serializers.StringToEntryData(r.Body)
 
 	entry, err := EntryCreateController(&data)
 	serializer := serializers.EntrySerializer{entry}
