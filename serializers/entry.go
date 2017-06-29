@@ -5,15 +5,16 @@ import (
 	. "github.com/carlosmaniero/budgetgo/errors"
 	. "github.com/carlosmaniero/budgetgo/models"
 	"io"
+	"strconv"
 	"time"
 )
 
-type entryData struct {
-	Id      string    `json:"id"`
-	Name    string    `json:"name"`
-	Amount  float32   `json:"amount,string"`
-	Date    time.Time `json:"date"`
-	Comment string    `json:"comment"`
+type EntryData struct {
+	Id      string `json:"id"`
+	Name    string `json:"name"`
+	Amount  string `json:"amount"`
+	Date    string `json:"date"`
+	Comment string `json:"comment"`
 }
 
 type entryErrorData struct {
@@ -27,33 +28,35 @@ type EntrySerializer struct {
 }
 
 func (serializer *EntrySerializer) Serialize() ([]byte, error) {
-	data := entryData{
+	data := EntryData{
 		Id:      serializer.Entry.Id,
+		Amount:  strconv.FormatFloat(serializer.Entry.Amount, 'f', 6, 64),
 		Name:    serializer.Entry.Name,
-		Amount:  serializer.Entry.Amount,
-		Date:    serializer.Entry.Date,
 		Comment: serializer.Entry.Comment,
 	}
 
 	return json.Marshal(data)
 }
 
-func (serializer *EntrySerializer) Unserialize(body io.Reader) error {
-	data := entryData{}
+func StringToEntryData(body io.Reader) (EntryData, error) {
+	data := EntryData{}
 	decoder := json.NewDecoder(body)
 	err := decoder.Decode(&data)
 
-	if err != nil {
-		return err
+	return data, err
+}
+
+func EntryDataToEntry(entryData *EntryData) *Entry {
+	amount, _ := strconv.ParseFloat(entryData.Amount, 64)
+	date, _ := time.Parse(time.RFC3339, entryData.Date)
+
+	return &Entry{
+		Id:      entryData.Id,
+		Name:    entryData.Name,
+		Amount:  amount,
+		Date:    date,
+		Comment: entryData.Comment,
 	}
-
-	serializer.Entry.Id = data.Id
-	serializer.Entry.Name = data.Name
-	serializer.Entry.Amount = data.Amount
-	serializer.Entry.Date = data.Date
-	serializer.Entry.Comment = data.Comment
-
-	return err
 }
 
 type EntryErrorSerializer struct {

@@ -5,7 +5,7 @@ import "time"
 type Entry struct {
 	Id      string
 	Name    string
-	Amount  float32
+	Amount  float64
 	Date    time.Time
 	Comment string
 }

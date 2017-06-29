@@ -49,6 +49,8 @@ func (service *EntryService) FindById(id string, ientry interface{}) error {
 	return errors.New("Element not found")
 }
 
+var entryService = &EntryService{entries: []*models.Entry{}}
+
 func NewEntryService() Service {
-	return &EntryService{entries: []*models.Entry{}}
+	return entryService
 }
