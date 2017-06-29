@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	. "github.com/carlosmaniero/budgetgo/errors"
 	. "github.com/carlosmaniero/budgetgo/models"
 	. "github.com/smartystreets/goconvey/convey"
 	"testing"
@@ -51,6 +52,10 @@ func TestSpec(t *testing.T) {
 
 			Convey("Then the Controller raise a validation error", func() {
 				So(err.Code, ShouldEqual, ValidationError)
+			})
+
+			Convey("And need to have field errors", func() {
+				So(len(err.FieldErrors), ShouldEqual, 2)
 			})
 		})
 	})
