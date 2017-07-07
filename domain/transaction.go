@@ -3,30 +3,42 @@ package domain
 type Transaction struct {
 	Description string
 	Amount      float64
+	Funding     Funding
 }
 
-func (entry *Transaction) ValidateAmout() error {
-	if entry.Amount == 0 {
+func (transaction *Transaction) ValidateAmout() error {
+	if transaction.Amount == 0 {
 		return &FieldValidationError{"Amount", "can't be equal zero"}
 	}
 	return nil
 }
 
-func (entry *Transaction) ValidateDescription() error {
-	if len(entry.Description) == 0 {
+func (transaction *Transaction) ValidateDescription() error {
+	if len(transaction.Description) == 0 {
 		return &FieldValidationError{"Description", "can't be empty"}
 	}
 	return nil
 }
 
-func (entry *Transaction) Validate() []error {
+func (transaction *Transaction) ValidateFunding() error {
+	if transaction.Funding.Validate() != nil {
+		return &FieldValidationError{"Funding", "isn't valid"}
+	}
+	return nil
+}
+
+func (transaction *Transaction) Validate() []error {
 	errors := make([]error, 0)
 
-	if err := entry.ValidateAmout(); err != nil {
+	if err := transaction.ValidateAmout(); err != nil {
 		errors = append(errors, err)
 	}
 
-	if err := entry.ValidateDescription(); err != nil {
+	if err := transaction.ValidateDescription(); err != nil {
+		errors = append(errors, err)
+	}
+
+	if err := transaction.ValidateFunding(); err != nil {
 		errors = append(errors, err)
 	}
 

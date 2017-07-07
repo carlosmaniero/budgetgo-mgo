@@ -7,68 +7,50 @@ import (
 
 func TestSpec(t *testing.T) {
 	Convey("Scenario: Validating an Transaction", t, func() {
-		Convey("Given I've an Transaction with description", func() {
-			transaction := Transaction{Description: "4 beers"}
+		Convey("Given I've a Transaction with description, amount different of zero and a valid Funding", func() {
+			transaction := Transaction{
+				Description: "4 beers",
+				Amount:      10.5,
+				Funding: Funding{
+					Name:       "Bank account",
+					Limit:      1000,
+					Amount:     0,
+					ClosingDay: 1,
+				},
+			}
 
-			Convey("And amount different of zero", func() {
-				transaction.Amount = 10.5
+			Convey("When I try to validate the transaction", func() {
+				errors := transaction.Validate()
 
-				Convey("When I try to validate the transaction", func() {
-					errors := transaction.Validate()
-
-					Convey("Then the Transaction is valid", func() {
-						So(errors, ShouldBeNil)
-					})
-				})
-			})
-			Convey("And amount equal zero", func() {
-				transaction.Amount = 0
-
-				Convey("When I try to validate the transaction", func() {
-					errors := transaction.Validate()
-
-					Convey("Then the Transaction isn't valid", func() {
-						So(errors, ShouldNotBeNil)
-					})
-
-					Convey("And show me an error", func() {
-						So(errors[0].Error(), ShouldEqual, "The \"Amount\" field can't be equal zero")
-					})
+				Convey("Then the Transaction is valid", func() {
+					So(errors, ShouldBeNil)
 				})
 			})
 		})
-		Convey("Given I've an Transaction with no description", func() {
-			transaction := Transaction{Description: ""}
+		Convey("Given I've a Transaction with no description, amount equal zero and a invalid Funding", func() {
+			transaction := Transaction{
+				Description: "",
+				Amount:      0,
+				Funding:     Funding{},
+			}
 
-			Convey("And amount different of zero", func() {
-				transaction.Amount = 2
+			Convey("When I try to validate the transaction", func() {
+				errors := transaction.Validate()
 
-				Convey("When I try to validate the transaction", func() {
-					errors := transaction.Validate()
-
-					Convey("Then the Transaction isn't valid", func() {
-						So(errors, ShouldNotBeNil)
-					})
-
-					Convey("And show me an error", func() {
-						So(errors[0].Error(), ShouldEqual, "The \"Description\" field can't be empty")
-					})
+				Convey("Then the Transaction isn't valid", func() {
+					So(errors, ShouldNotBeNil)
 				})
-			})
 
-			Convey("And amount equal zero", func() {
-				transaction.Amount = 0
+				Convey("And I can see that the Description can't be empty", func() {
+					shouldHaveErrorIn(errors, "Description", "The \"Description\" field can't be empty")
+				})
 
-				Convey("When I try to validate the transaction", func() {
-					errors := transaction.Validate()
+				Convey("And I can see that the Amount can't be zero", func() {
+					shouldHaveErrorIn(errors, "Amount", "The \"Amount\" field can't be equal zero")
+				})
 
-					Convey("Then the Transaction isn't valid", func() {
-						So(errors, ShouldNotBeNil)
-					})
-
-					Convey("And show me two errors", func() {
-						So(len(errors), ShouldEqual, 2)
-					})
+				Convey("And I can see that the Funding is invalid", func() {
+					shouldHaveErrorIn(errors, "Funding", "The \"Funding\" field isn't valid")
 				})
 			})
 		})

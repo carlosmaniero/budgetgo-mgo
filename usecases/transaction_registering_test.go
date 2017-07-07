@@ -11,15 +11,22 @@ func TestSpec(t *testing.T) {
 		Convey("Given I've a Valid Transaction", func() {
 			description := "4 beers"
 			amount := 24.99
+			funding := domain.Funding{
+				Name:       "Bank account",
+				Limit:      1000,
+				Amount:     0,
+				ClosingDay: 1,
+			}
 
 			Convey("When I register the transaction", func() {
 				repository := transactionRepository{
 					storedTotal:         0,
 					expectedDescription: description,
 					expectedAmount:      amount,
+					expectedFunding:     funding,
 				}
 				iterator := TransactionInteractor{Repository: &repository}
-				err, _ := iterator.Register(description, amount)
+				err, _ := iterator.Register(description, amount, funding)
 
 				Convey("Then the transaction is saved successly", func() {
 					So(err, ShouldBeNil)
@@ -34,6 +41,7 @@ func TestSpec(t *testing.T) {
 		Convey("Given I've a invalid Transaction", func() {
 			description := ""
 			amount := 0.0
+			funding := domain.Funding{}
 
 			Convey("When I register the transaction", func() {
 				repository := transactionRepository{
@@ -42,7 +50,7 @@ func TestSpec(t *testing.T) {
 					expectedAmount:      amount,
 				}
 				iterator := TransactionInteractor{Repository: &repository}
-				err, _ := iterator.Register(description, amount)
+				err, _ := iterator.Register(description, amount, funding)
 
 				Convey("Then the transaction isn't saved", func() {
 					So(err, ShouldNotBeNil)
@@ -61,6 +69,7 @@ type transactionRepository struct {
 	storedTotal         int
 	expectedDescription string
 	expectedAmount      float64
+	expectedFunding     domain.Funding
 }
 
 func (t *transactionRepository) Store(transaction *domain.Transaction) {

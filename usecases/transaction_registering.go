@@ -20,8 +20,12 @@ func (err *TransactionValidationErrors) Error() string {
 	return "The transaction has validation errors"
 }
 
-func (iterator *TransactionInteractor) Register(description string, amount float64) (error, *domain.Transaction) {
-	transaction := domain.Transaction{Description: description, Amount: amount}
+func (iterator *TransactionInteractor) Register(description string, amount float64, funding domain.Funding) (error, *domain.Transaction) {
+	transaction := domain.Transaction{
+		Description: description,
+		Amount:      amount,
+		Funding:     funding,
+	}
 
 	if errs := transaction.Validate(); errs != nil {
 		err := TransactionValidationErrors{errs}
