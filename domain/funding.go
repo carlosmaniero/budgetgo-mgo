@@ -7,21 +7,21 @@ type Funding struct {
 	ClosingDay int
 }
 
-func (funding *Funding) NameValidate() error {
+func (funding *Funding) ValidateName() error {
 	if len(funding.Name) == 0 {
 		return &FieldValidationError{"Name", "can't be empty"}
 	}
 	return nil
 }
 
-func (funding *Funding) LimitValidate() error {
+func (funding *Funding) ValidateLimit() error {
 	if funding.Limit < 0 {
 		return &FieldValidationError{"Limit", "can't be negative"}
 	}
 	return nil
 }
 
-func (funding *Funding) ClosingDayValidate() error {
+func (funding *Funding) ValidateClosingDay() error {
 	if funding.ClosingDay <= 0 {
 		return &FieldValidationError{"ClosingDay", "should be greater than zero"}
 	}
@@ -31,15 +31,15 @@ func (funding *Funding) ClosingDayValidate() error {
 func (funding *Funding) Validate() []error {
 	errors := make([]error, 0)
 
-	if err := funding.NameValidate(); err != nil {
+	if err := funding.ValidateName(); err != nil {
 		errors = append(errors, err)
 	}
 
-	if err := funding.LimitValidate(); err != nil {
+	if err := funding.ValidateLimit(); err != nil {
 		errors = append(errors, err)
 	}
 
-	if err := funding.ClosingDayValidate(); err != nil {
+	if err := funding.ValidateClosingDay(); err != nil {
 		errors = append(errors, err)
 	}
 

@@ -5,14 +5,14 @@ type Transaction struct {
 	Amount      float64
 }
 
-func (entry *Transaction) AmoutValidate() error {
+func (entry *Transaction) ValidateAmout() error {
 	if entry.Amount == 0 {
 		return &FieldValidationError{"Amount", "can't be equal zero"}
 	}
 	return nil
 }
 
-func (entry *Transaction) DescriptionValidate() error {
+func (entry *Transaction) ValidateDescription() error {
 	if len(entry.Description) == 0 {
 		return &FieldValidationError{"Description", "can't be empty"}
 	}
@@ -22,11 +22,11 @@ func (entry *Transaction) DescriptionValidate() error {
 func (entry *Transaction) Validate() []error {
 	errors := make([]error, 0)
 
-	if err := entry.AmoutValidate(); err != nil {
+	if err := entry.ValidateAmout(); err != nil {
 		errors = append(errors, err)
 	}
 
-	if err := entry.DescriptionValidate(); err != nil {
+	if err := entry.ValidateDescription(); err != nil {
 		errors = append(errors, err)
 	}
 
