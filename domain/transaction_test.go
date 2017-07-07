@@ -1,4 +1,4 @@
-package transaction
+package domain
 
 import (
 	. "github.com/smartystreets/goconvey/convey"

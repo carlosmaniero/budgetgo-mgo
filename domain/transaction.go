@@ -1,4 +1,4 @@
-package transaction
+package domain
 
 type Transaction struct {
 	Description string
