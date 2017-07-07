@@ -1,19 +1,33 @@
 package use_cases
 
 import (
-	. "github.com/carlosmaniero/budgetgo/domain"
+	"github.com/carlosmaniero/budgetgo/domain"
 )
 
 type TransactionRepository interface {
-	Store(*Transaction)
+	Store(*domain.Transaction)
 }
 
 type TransactionInteractor struct {
 	Repository TransactionRepository
 }
 
-func (iterator *TransactionInteractor) Register(description string, amount float64) (error, *Transaction) {
-	transaction := Transaction{Description: description, Amount: amount}
+type TransactionValidationErrors struct {
+	errors []error
+}
+
+func (err *TransactionValidationErrors) Error() string {
+	return "The transaction has validation errors"
+}
+
+func (iterator *TransactionInteractor) Register(description string, amount float64) (error, *domain.Transaction) {
+	transaction := domain.Transaction{Description: description, Amount: amount}
+
+	if errs := transaction.Validate(); errs != nil {
+		err := TransactionValidationErrors{errs}
+		return &err, nil
+	}
+
 	iterator.Repository.Store(&transaction)
 	return nil, &transaction
 }
