@@ -32,7 +32,7 @@ func TestSpec(t *testing.T) {
 					})
 
 					Convey("And show me an error", func() {
-						So(errors[0].Error(), ShouldEqual, "Amount can't be equal zero")
+						So(errors[0].Error(), ShouldEqual, "The \"Amount\" field can't be equal zero")
 					})
 				})
 			})
@@ -51,7 +51,7 @@ func TestSpec(t *testing.T) {
 					})
 
 					Convey("And show me an error", func() {
-						So(errors[0].Error(), ShouldEqual, "Description can't be empty")
+						So(errors[0].Error(), ShouldEqual, "The \"Description\" field can't be empty")
 					})
 				})
 			})
