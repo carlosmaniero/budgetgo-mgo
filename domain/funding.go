@@ -9,21 +9,21 @@ type Funding struct {
 
 func (funding *Funding) NameValidate() error {
 	if len(funding.Name) == 0 {
-		return &ValidationError{"Name", "can't be empty"}
+		return &FieldValidationError{"Name", "can't be empty"}
 	}
 	return nil
 }
 
 func (funding *Funding) LimitValidate() error {
 	if funding.Limit < 0 {
-		return &ValidationError{"Limit", "can't be negative"}
+		return &FieldValidationError{"Limit", "can't be negative"}
 	}
 	return nil
 }
 
 func (funding *Funding) ClosingDayValidate() error {
 	if funding.ClosingDay <= 0 {
-		return &ValidationError{"ClosingDay", "should be greater than zero"}
+		return &FieldValidationError{"ClosingDay", "should be greater than zero"}
 	}
 	return nil
 }

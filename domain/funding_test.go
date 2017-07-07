@@ -61,10 +61,10 @@ func TestSpecFounding(t *testing.T) {
 
 func shouldHaveErrorIn(errs []error, field string, message string) {
 	founded := false
-	var foundedError *ValidationError
+	var foundedError *FieldValidationError
 
 	for _, err := range errs {
-		validationError := err.(*ValidationError)
+		validationError := err.(*FieldValidationError)
 		if validationError.Field == field {
 			founded = true
 			foundedError = validationError

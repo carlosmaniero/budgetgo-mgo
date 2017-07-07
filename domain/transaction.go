@@ -5,25 +5,16 @@ type Transaction struct {
 	Amount      float64
 }
 
-type ValidationError struct {
-	Field   string
-	Message string
-}
-
-func (err *ValidationError) Error() string {
-	return "The \"" + err.Field + "\" field " + err.Message
-}
-
 func (entry *Transaction) AmoutValidate() error {
 	if entry.Amount == 0 {
-		return &ValidationError{"Amount", "can't be equal zero"}
+		return &FieldValidationError{"Amount", "can't be equal zero"}
 	}
 	return nil
 }
 
 func (entry *Transaction) DescriptionValidate() error {
 	if len(entry.Description) == 0 {
-		return &ValidationError{"Description", "can't be empty"}
+		return &FieldValidationError{"Description", "can't be empty"}
 	}
 	return nil
 }
