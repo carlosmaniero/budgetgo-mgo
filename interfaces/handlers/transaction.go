@@ -13,8 +13,14 @@ func (handlers *Handlers) TransactionCreate(response http.ResponseWriter, reques
 	iterator := usecases.TransactionInteractor{Repository: handlers.Application.TransactionRepository}
 	funding := domain.Funding{Name: "Default funding", Limit: 1000, Amount: 0, ClosingDay: 1}
 
-	data, _ := serializers.UnserializeTransactionData(request.Body)
+	data, err := serializers.UnserializeTransactionData(request.Body)
+
+	if err != nil {
+		handlers.UnserializerErrorHandler(err, response)
+		return
+	}
 	_, transaction := iterator.Register(data.Description, data.Amount, funding)
 
+	response.Header().Set("Content-Type", "application/json")
 	fmt.Fprint(response, string(serializers.SerializeTransaction(transaction)))
 }
