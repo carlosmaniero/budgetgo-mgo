@@ -6,12 +6,15 @@ import (
 	"net/http"
 	"github.com/carlosmaniero/budgetgo/usecases"
 	"github.com/carlosmaniero/budgetgo/domain"
+	"github.com/carlosmaniero/budgetgo/interfaces/serializers"
 )
 
-func (handlers *Handlers) TransactionCreate(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+func (handlers *Handlers) TransactionCreate(response http.ResponseWriter, request *http.Request, _ httprouter.Params) {
 	iterator := usecases.TransactionInteractor{Repository: handlers.Application.TransactionRepository}
 	funding := domain.Funding{Name: "Default funding", Limit: 1000, Amount: 0, ClosingDay: 1}
-	iterator.Register("4 beers", 10.5, funding)
 
-	fmt.Fprint(w, "Transaction created")
+	data, _ := serializers.UnserializeTransactionData(request.Body)
+	_, transaction := iterator.Register(data.Description, data.Amount, funding)
+
+	fmt.Fprint(response, string(serializers.SerializeTransaction(transaction)))
 }
