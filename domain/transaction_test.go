@@ -3,6 +3,7 @@ package domain
 import (
 	. "github.com/smartystreets/goconvey/convey"
 	"testing"
+	"time"
 )
 
 func TestSpec(t *testing.T) {
@@ -11,6 +12,7 @@ func TestSpec(t *testing.T) {
 			transaction := Transaction{
 				Description: "4 beers",
 				Amount:      10.5,
+				Date: time.Now(),
 				Funding: Funding{
 					Name:       "Bank account",
 					Limit:      1000,
@@ -31,6 +33,7 @@ func TestSpec(t *testing.T) {
 			transaction := Transaction{
 				Description: "",
 				Amount:      0,
+				Date:		 time.Now().AddDate(0, -1,-1),
 				Funding:     Funding{},
 			}
 
@@ -51,6 +54,10 @@ func TestSpec(t *testing.T) {
 
 				Convey("And I can see that the Funding is invalid", func() {
 					shouldHaveErrorIn(errors, "Funding", "The \"Funding\" field isn't valid")
+				})
+
+				Convey("And I can see that the I can't register an transaction a mouth ago", func() {
+					shouldHaveErrorIn(errors, "Date", "The \"Date\" field can't be greater than one month")
 				})
 			})
 		})

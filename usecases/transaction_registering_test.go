@@ -4,6 +4,7 @@ import (
 	"github.com/carlosmaniero/budgetgo/domain"
 	. "github.com/smartystreets/goconvey/convey"
 	"testing"
+	"time"
 )
 
 func TestSpec(t *testing.T) {
@@ -11,6 +12,7 @@ func TestSpec(t *testing.T) {
 		Convey("Given I've a Valid Transaction", func() {
 			description := "4 beers"
 			amount := 24.99
+			date := time.Now()
 			funding := domain.Funding{
 				Name:       "Bank account",
 				Limit:      1000,
@@ -23,10 +25,11 @@ func TestSpec(t *testing.T) {
 					storedTotal:         0,
 					expectedDescription: description,
 					expectedAmount:      amount,
+					expectedDate:      	 date,
 					expectedFunding:     funding,
 				}
 				iterator := TransactionInteractor{Repository: &repository}
-				err, _ := iterator.Register(description, amount, funding)
+				err, _ := iterator.Register(description, amount, date, funding)
 
 				Convey("Then the transaction is saved successly", func() {
 					So(err, ShouldBeNil)
@@ -41,16 +44,18 @@ func TestSpec(t *testing.T) {
 		Convey("Given I've a invalid Transaction", func() {
 			description := ""
 			amount := 0.0
+			date := time.Now().AddDate(0, -1, -1)
 			funding := domain.Funding{}
 
 			Convey("When I register the transaction", func() {
 				repository := transactionRepository{
 					storedTotal:         0,
 					expectedDescription: description,
+					expectedDate: 		 date,
 					expectedAmount:      amount,
 				}
 				iterator := TransactionInteractor{Repository: &repository}
-				err, _ := iterator.Register(description, amount, funding)
+				err, _ := iterator.Register(description, amount, date, funding)
 
 				Convey("Then the transaction isn't saved", func() {
 					So(err, ShouldNotBeNil)
@@ -69,6 +74,7 @@ type transactionRepository struct {
 	storedTotal         int
 	expectedDescription string
 	expectedAmount      float64
+	expectedDate		time.Time
 	expectedFunding     domain.Funding
 }
 

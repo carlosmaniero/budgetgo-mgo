@@ -2,6 +2,7 @@ package usecases
 
 import (
 	"github.com/carlosmaniero/budgetgo/domain"
+	"time"
 )
 
 type TransactionRepository interface {
@@ -20,10 +21,11 @@ func (err *TransactionValidationErrors) Error() string {
 	return "The transaction has validation errors"
 }
 
-func (iterator *TransactionInteractor) Register(description string, amount float64, funding domain.Funding) (error, *domain.Transaction) {
+func (iterator *TransactionInteractor) Register(description string, amount float64, date time.Time, funding domain.Funding) (error, *domain.Transaction) {
 	transaction := domain.Transaction{
 		Description: description,
 		Amount:      amount,
+		Date: 		 date,
 		Funding:     funding,
 	}
 

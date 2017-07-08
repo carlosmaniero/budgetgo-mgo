@@ -1,8 +1,11 @@
 package domain
 
+import "time"
+
 type Transaction struct {
 	Description string
 	Amount      float64
+	Date		time.Time
 	Funding     Funding
 }
 
@@ -27,6 +30,15 @@ func (transaction *Transaction) ValidateFunding() error {
 	return nil
 }
 
+func (transaction *Transaction) ValidateDate() error {
+	dateLimit := time.Now().AddDate(0, -1, 0)
+
+	if transaction.Date.Before(dateLimit) {
+		return &FieldValidationError{"Date", "can't be greater than one month"}
+	}
+	return nil
+}
+
 func (transaction *Transaction) Validate() []error {
 	errors := make([]error, 0)
 
@@ -39,6 +51,10 @@ func (transaction *Transaction) Validate() []error {
 	}
 
 	if err := transaction.ValidateFunding(); err != nil {
+		errors = append(errors, err)
+	}
+
+	if err := transaction.ValidateDate(); err != nil {
 		errors = append(errors, err)
 	}
 
