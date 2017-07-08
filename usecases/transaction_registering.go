@@ -13,7 +13,7 @@ type TransactionInteractor struct {
 }
 
 type TransactionValidationErrors struct {
-	errors []error
+	Errors []error
 }
 
 func (err *TransactionValidationErrors) Error() string {

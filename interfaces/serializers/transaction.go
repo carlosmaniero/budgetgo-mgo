@@ -12,6 +12,16 @@ type TransactionData struct {
 	Amount float64 		`json:"amount"`
 }
 
+type TransactionValidationErrorData struct {
+	Type 	string				`json:"type"`
+	Message string				`json:"message"`
+	Errors 	[]*FieldErrorData	`json:"errors"`
+}
+
+type FieldErrorData struct {
+	Field string	`json:"field"`
+	Message string 	`json:"message"`
+}
 
 func UnserializeTransactionData(reader io.Reader) (*TransactionData, error) {
 	data := TransactionData{}
@@ -24,6 +34,11 @@ func SerializeTransaction(transaction *domain.Transaction) []byte {
 		Description: transaction.Description,
 		Amount: transaction.Amount,
 	}
+	b, _ := json.Marshal(data)
+	return b
+}
+
+func SerializeTransactionValidationError(data *TransactionValidationErrorData) []byte {
 	b, _ := json.Marshal(data)
 	return b
 }
