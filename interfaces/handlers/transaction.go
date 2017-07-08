@@ -11,6 +11,8 @@ import (
 )
 
 func (handlers *Handlers) TransactionCreate(response http.ResponseWriter, request *http.Request, _ httprouter.Params) {
+	defer handlers.catchPanics(response)
+
 	iterator := usecases.TransactionInteractor{Repository: handlers.Application.TransactionRepository}
 	funding := domain.Funding{Name: "Default funding", Limit: 1000, Amount: 0, ClosingDay: 1}
 

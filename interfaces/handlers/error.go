@@ -6,11 +6,12 @@ import (
 	"fmt"
 	"github.com/carlosmaniero/budgetgo/interfaces/serializers"
 	"time"
+	"github.com/carlosmaniero/budgetgo/interfaces/repositories/memory_repository"
 )
 
 
 func (handlers *Handlers) UnserializerErrorHandler (err error, response http.ResponseWriter) {
-	errorResponse := handlers.createErrorResponse(err)
+	errorResponse := handlers.getErrorResponse(err)
 	data := serializers.SerializeErrorResponse(&errorResponse)
 
 	response.Header().Set("Content-Type", "application/json")
@@ -18,7 +19,18 @@ func (handlers *Handlers) UnserializerErrorHandler (err error, response http.Res
 	fmt.Fprint(response, string(data))
 }
 
-func (handlers *Handlers) createErrorResponse(err error) serializers.ErrorResponseData{
+func (handlers *Handlers) catchPanics(response http.ResponseWriter) {
+	if err := recover(); err != nil {
+		errorResponse := handlers.getErrorResponse(err)
+		data := serializers.SerializeErrorResponse(&errorResponse)
+
+		response.Header().Set("Content-Type", "application/json")
+		response.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprint(response, string(data))
+	}
+}
+
+func (handlers *Handlers) getErrorResponse(err interface{}) serializers.ErrorResponseData{
 	switch err := err.(type) {
 	case *json.UnmarshalTypeError:
 		return serializers.ErrorResponseData{
@@ -30,10 +42,20 @@ func (handlers *Handlers) createErrorResponse(err error) serializers.ErrorRespon
 			Type: "parser",
 			Message: "cannot parse the sent date. Check the date format. Date Formate: " + time.RFC3339 + " (RFC3339)",
 		}
+	case *memory_repository.MemoryMaxTransactionsError:
+		return serializers.ErrorResponseData{
+			Type: "server_error",
+			Message: err.Error(),
+		}
+	case error:
+		return serializers.ErrorResponseData{
+			Type:    "server_error",
+			Message: err.Error(),
+		}
 	default:
 		return serializers.ErrorResponseData{
-			Type: "parser",
-			Message: "An error was occurred when parse your request body",
+			Type: "server_error",
+			Message: "An error was occurred check your request body",
 		}
 	}
 }
