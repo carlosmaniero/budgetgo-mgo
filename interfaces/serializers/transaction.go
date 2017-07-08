@@ -4,12 +4,14 @@ import (
 	"io"
 	"encoding/json"
 	"github.com/carlosmaniero/budgetgo/domain"
+	"time"
 )
 
 
 type TransactionData struct {
 	Description string  `json:"description"`
 	Amount float64 		`json:"amount"`
+	Date   time.Time	`json:"date"`
 }
 
 type TransactionValidationErrorData struct {
@@ -33,6 +35,7 @@ func SerializeTransaction(transaction *domain.Transaction) []byte {
 	data := TransactionData{
 		Description: transaction.Description,
 		Amount: transaction.Amount,
+		Date: transaction.Date,
 	}
 	b, _ := json.Marshal(data)
 	return b

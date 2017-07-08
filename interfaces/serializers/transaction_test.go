@@ -5,6 +5,7 @@ import (
 	. "github.com/smartystreets/goconvey/convey"
 	"strings"
 	"github.com/carlosmaniero/budgetgo/domain"
+	"time"
 )
 
 func TestSpecFounding(t *testing.T) {
@@ -37,13 +38,15 @@ func TestSpecFounding(t *testing.T) {
 			transaction := domain.Transaction{
 				Description: "5 beers",
 				Amount: 22.90,
+				Date: time.Now(),
 			}
 
 			Convey("When I serialize it", func() {
 				data := string(SerializeTransaction(&transaction))
 
 				Convey("Then I can see the data serialized", func() {
-					So(data, ShouldEqual, "{\"description\":\"5 beers\",\"amount\":22.9}")
+					strDate := transaction.Date.Format(time.RFC3339Nano)
+					So(data, ShouldEqual, "{\"description\":\"5 beers\",\"amount\":22.9,\"date\":\""+strDate+"\"}")
 				})
 			})
 		})

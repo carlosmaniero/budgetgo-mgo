@@ -8,7 +8,6 @@ import (
 	"github.com/carlosmaniero/budgetgo/domain"
 	"github.com/carlosmaniero/budgetgo/interfaces/serializers"
 	"strings"
-	"time"
 )
 
 func (handlers *Handlers) TransactionCreate(response http.ResponseWriter, request *http.Request, _ httprouter.Params) {
@@ -22,7 +21,7 @@ func (handlers *Handlers) TransactionCreate(response http.ResponseWriter, reques
 		return
 	}
 
-	err, transaction := iterator.Register(data.Description, data.Amount, time.Now(), funding)
+	err, transaction := iterator.Register(data.Description, data.Amount, data.Date, funding)
 
 	if err != nil {
 		handlers.TransactionCreateErrorHandler(err, response)

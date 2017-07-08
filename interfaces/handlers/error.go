@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/carlosmaniero/budgetgo/interfaces/serializers"
+	"reflect"
+	"time"
 )
 
 
@@ -20,7 +22,16 @@ func (handlers *Handlers) UnserializerErrorHandler (err error, response http.Res
 
 		data := serializers.SerializeErrorResponse(&errorResponse)
 		fmt.Fprint(response, string(data))
+	case *time.ParseError:
+		errorResponse := serializers.ErrorResponseData{
+			Type: "parser",
+			Message: "cannot parse the sent date. Check the date format. Date Formate: " + time.RFC3339 + " (RFC3339)",
+		}
+
+		data := serializers.SerializeErrorResponse(&errorResponse)
+		fmt.Fprint(response, string(data))
 	default:
+		fmt.Println(reflect.TypeOf(err))
 		errorResponse := serializers.ErrorResponseData{
 			Type: "parser",
 			Message: "An error was occurred when parse your request body",
