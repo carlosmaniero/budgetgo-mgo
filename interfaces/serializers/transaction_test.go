@@ -4,6 +4,7 @@ import (
 	"testing"
 	. "github.com/smartystreets/goconvey/convey"
 	"strings"
+	"github.com/carlosmaniero/budgetgo/domain"
 )
 
 func TestSpecFounding(t *testing.T) {
@@ -27,6 +28,23 @@ func TestSpecFounding(t *testing.T) {
 			Convey("Then I can't unserialize it", func() {
 				_, err := UnserializeTransactionData(jsonTransaction)
 				So(err, ShouldNotBeNil)
+			})
+		})
+	})
+
+	Convey("Scenario: Serializing on transaction", t, func() {
+		Convey("Given I've a transaction", func() {
+			transaction := domain.Transaction{
+				Description: "5 beers",
+				Amount: 22.90,
+			}
+
+			Convey("When I serialize it", func() {
+				data := string(SerializeTransaction(&transaction))
+
+				Convey("Then I can see the data serialized", func() {
+					So(data, ShouldEqual, "{\"description\":\"5 beers\",\"amount\":22.9}")
+				})
 			})
 		})
 	})
