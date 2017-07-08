@@ -24,6 +24,14 @@ func TestSpecFounding(t *testing.T) {
 					})
 				})
 			})
+			Convey("When I get an unregistered repository", func() {
+				repository, err := NewTransactionRepository("mysql")
+
+				Convey("Then it can't received", func() {
+					So(err, ShouldNotBeNil)
+					So(repository, ShouldBeNil)
+				})
+			})
 		})
 	})
 }
