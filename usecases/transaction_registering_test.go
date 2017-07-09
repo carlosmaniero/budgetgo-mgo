@@ -25,7 +25,7 @@ func TestSpec(t *testing.T) {
 					storedTotal:         0,
 					expectedDescription: description,
 					expectedAmount:      amount,
-					expectedDate:      	 date,
+					expectedDate:        date,
 					expectedFunding:     funding,
 				}
 				iterator := TransactionInteractor{Repository: &repository}
@@ -51,7 +51,7 @@ func TestSpec(t *testing.T) {
 				repository := transactionRepository{
 					storedTotal:         0,
 					expectedDescription: description,
-					expectedDate: 		 date,
+					expectedDate:        date,
 					expectedAmount:      amount,
 				}
 				iterator := TransactionInteractor{Repository: &repository}
@@ -74,7 +74,7 @@ type transactionRepository struct {
 	storedTotal         int
 	expectedDescription string
 	expectedAmount      float64
-	expectedDate		time.Time
+	expectedDate        time.Time
 	expectedFunding     domain.Funding
 }
 

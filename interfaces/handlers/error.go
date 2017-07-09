@@ -1,16 +1,15 @@
 package handlers
 
 import (
-	"net/http"
 	"encoding/json"
 	"fmt"
-	"github.com/carlosmaniero/budgetgo/interfaces/serializers"
-	"time"
 	"github.com/carlosmaniero/budgetgo/interfaces/repositories/memory_repository"
+	"github.com/carlosmaniero/budgetgo/interfaces/serializers"
+	"net/http"
+	"time"
 )
 
-
-func (handlers *Handlers) UnserializerErrorHandler (err error, response http.ResponseWriter) {
+func (handlers *Handlers) UnserializerErrorHandler(err error, response http.ResponseWriter) {
 	errorResponse := handlers.getErrorResponse(err)
 	data := serializers.SerializeErrorResponse(&errorResponse)
 
@@ -30,21 +29,21 @@ func (handlers *Handlers) catchPanics(response http.ResponseWriter) {
 	}
 }
 
-func (handlers *Handlers) getErrorResponse(err interface{}) serializers.ErrorResponseData{
+func (handlers *Handlers) getErrorResponse(err interface{}) serializers.ErrorResponseData {
 	switch err := err.(type) {
 	case *json.UnmarshalTypeError:
 		return serializers.ErrorResponseData{
-			Type: "parser",
-			Message: "cannot add " + err.Value + " value into field " +  err.Field + " of type " + err.Type.String(),
+			Type:    "parser",
+			Message: "cannot add " + err.Value + " value into field " + err.Field + " of type " + err.Type.String(),
 		}
 	case *time.ParseError:
 		return serializers.ErrorResponseData{
-			Type: "parser",
+			Type:    "parser",
 			Message: "cannot parse the sent date. Check the date format. Date Formate: " + time.RFC3339 + " (RFC3339)",
 		}
 	case *memory_repository.MemoryMaxTransactionsError:
 		return serializers.ErrorResponseData{
-			Type: "server_error",
+			Type:    "server_error",
 			Message: err.Error(),
 		}
 	case error:
@@ -54,7 +53,7 @@ func (handlers *Handlers) getErrorResponse(err interface{}) serializers.ErrorRes
 		}
 	default:
 		return serializers.ErrorResponseData{
-			Type: "server_error",
+			Type:    "server_error",
 			Message: "An error was occurred check your request body",
 		}
 	}

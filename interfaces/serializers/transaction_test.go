@@ -1,10 +1,10 @@
 package serializers
 
 import (
-	"testing"
+	"github.com/carlosmaniero/budgetgo/domain"
 	. "github.com/smartystreets/goconvey/convey"
 	"strings"
-	"github.com/carlosmaniero/budgetgo/domain"
+	"testing"
 	"time"
 )
 
@@ -37,8 +37,8 @@ func TestSpecFounding(t *testing.T) {
 		Convey("Given I've a transaction", func() {
 			transaction := domain.Transaction{
 				Description: "5 beers",
-				Amount: 22.90,
-				Date: time.Now(),
+				Amount:      22.90,
+				Date:        time.Now(),
 			}
 
 			Convey("When I serialize it", func() {

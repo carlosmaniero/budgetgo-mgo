@@ -5,7 +5,7 @@ import "time"
 type Transaction struct {
 	Description string
 	Amount      float64
-	Date		time.Time
+	Date        time.Time
 	Funding     Funding
 }
 

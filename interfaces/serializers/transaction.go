@@ -1,28 +1,27 @@
 package serializers
 
 import (
-	"io"
 	"encoding/json"
 	"github.com/carlosmaniero/budgetgo/domain"
+	"io"
 	"time"
 )
 
-
 type TransactionData struct {
-	Description string  `json:"description"`
-	Amount float64 		`json:"amount"`
-	Date   time.Time	`json:"date"`
+	Description string    `json:"description"`
+	Amount      float64   `json:"amount"`
+	Date        time.Time `json:"date"`
 }
 
 type TransactionValidationErrorData struct {
-	Type 	string				`json:"type"`
-	Message string				`json:"message"`
-	Errors 	[]*FieldErrorData	`json:"errors"`
+	Type    string            `json:"type"`
+	Message string            `json:"message"`
+	Errors  []*FieldErrorData `json:"errors"`
 }
 
 type FieldErrorData struct {
-	Field string	`json:"field"`
-	Message string 	`json:"message"`
+	Field   string `json:"field"`
+	Message string `json:"message"`
 }
 
 func UnserializeTransactionData(reader io.Reader) (*TransactionData, error) {
@@ -34,8 +33,8 @@ func UnserializeTransactionData(reader io.Reader) (*TransactionData, error) {
 func SerializeTransaction(transaction *domain.Transaction) []byte {
 	data := TransactionData{
 		Description: transaction.Description,
-		Amount: transaction.Amount,
-		Date: transaction.Date,
+		Amount:      transaction.Amount,
+		Date:        transaction.Date,
 	}
 	b, _ := json.Marshal(data)
 	return b

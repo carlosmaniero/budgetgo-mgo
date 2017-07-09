@@ -9,7 +9,7 @@ type MemoryRepository struct {
 	transactions []*domain.Transaction
 }
 
-type MemoryMaxTransactionsError struct {}
+type MemoryMaxTransactionsError struct{}
 
 func (err *MemoryMaxTransactionsError) Error() string {
 	return "5 is the limit of in memory transaction"

@@ -1,11 +1,11 @@
 package main
 
 import (
+	"github.com/carlosmaniero/budgetgo/interfaces/application"
 	. "github.com/carlosmaniero/budgetgo/interfaces/handlers"
 	"github.com/julienschmidt/httprouter"
 	"log"
 	"net/http"
-	"github.com/carlosmaniero/budgetgo/interfaces/application"
 )
 
 func main() {

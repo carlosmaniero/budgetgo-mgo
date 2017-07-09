@@ -25,7 +25,7 @@ func (iterator *TransactionInteractor) Register(description string, amount float
 	transaction := domain.Transaction{
 		Description: description,
 		Amount:      amount,
-		Date: 		 date,
+		Date:        date,
 		Funding:     funding,
 	}
 

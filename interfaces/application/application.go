@@ -1,8 +1,8 @@
 package application
 
 import (
-	"github.com/carlosmaniero/budgetgo/usecases"
 	"github.com/carlosmaniero/budgetgo/interfaces/repositories"
+	"github.com/carlosmaniero/budgetgo/usecases"
 )
 
 type Application struct {

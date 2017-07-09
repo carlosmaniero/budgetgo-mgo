@@ -2,11 +2,11 @@ package handlers
 
 import (
 	"fmt"
-	"github.com/julienschmidt/httprouter"
-	"net/http"
-	"github.com/carlosmaniero/budgetgo/usecases"
 	"github.com/carlosmaniero/budgetgo/domain"
 	"github.com/carlosmaniero/budgetgo/interfaces/serializers"
+	"github.com/carlosmaniero/budgetgo/usecases"
+	"github.com/julienschmidt/httprouter"
+	"net/http"
 	"strings"
 )
 
@@ -34,9 +34,7 @@ func (handlers *Handlers) TransactionCreate(response http.ResponseWriter, reques
 	fmt.Fprint(response, string(serializers.SerializeTransaction(transaction)))
 }
 
-
-
-func (handlers *Handlers) TransactionCreateErrorHandler (err error, response http.ResponseWriter) {
+func (handlers *Handlers) TransactionCreateErrorHandler(err error, response http.ResponseWriter) {
 	response.Header().Set("Content-Type", "application/json")
 	response.WriteHeader(http.StatusBadRequest)
 
@@ -44,16 +42,16 @@ func (handlers *Handlers) TransactionCreateErrorHandler (err error, response htt
 	case *usecases.TransactionValidationErrors:
 
 		errorResponse := serializers.TransactionValidationErrorData{
-			Type: "validation_error",
+			Type:    "validation_error",
 			Message: err.Error(),
-			Errors: handlers.convertTransactionFieldErrors(err.Errors),
+			Errors:  handlers.convertTransactionFieldErrors(err.Errors),
 		}
 
 		data := serializers.SerializeTransactionValidationError(&errorResponse)
 		fmt.Fprint(response, string(data))
 	default:
 		errorResponse := serializers.ErrorResponseData{
-			Type: "domain_error",
+			Type:    "domain_error",
 			Message: err.Error(),
 		}
 
@@ -62,12 +60,12 @@ func (handlers *Handlers) TransactionCreateErrorHandler (err error, response htt
 	}
 }
 
-func (handlers *Handlers) convertTransactionFieldErrors (errors []error) []*serializers.FieldErrorData {
+func (handlers *Handlers) convertTransactionFieldErrors(errors []error) []*serializers.FieldErrorData {
 	fieldErrors := make([]*serializers.FieldErrorData, len(errors))
 	for index, value := range errors {
 		err := value.(*domain.FieldValidationError)
 		fieldErrors[index] = &serializers.FieldErrorData{
-			Field: strings.ToLower(err.Field),
+			Field:   strings.ToLower(err.Field),
 			Message: err.Message,
 		}
 	}

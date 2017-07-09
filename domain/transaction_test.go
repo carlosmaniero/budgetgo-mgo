@@ -12,7 +12,7 @@ func TestSpec(t *testing.T) {
 			transaction := Transaction{
 				Description: "4 beers",
 				Amount:      10.5,
-				Date: time.Now(),
+				Date:        time.Now(),
 				Funding: Funding{
 					Name:       "Bank account",
 					Limit:      1000,
@@ -33,7 +33,7 @@ func TestSpec(t *testing.T) {
 			transaction := Transaction{
 				Description: "",
 				Amount:      0,
-				Date:		 time.Now().AddDate(0, -1,-1),
+				Date:        time.Now().AddDate(0, -1, -1),
 				Funding:     Funding{},
 			}
 
