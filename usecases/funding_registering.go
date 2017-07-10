@@ -22,7 +22,7 @@ func (iterator *FundingInteractor) Register(name string, amount float64, closing
 	}
 
 	iterator.Repository.Store(&funding)
-	return nil, nil
+	return nil, &funding
 }
 
 type FundingValidationErrors struct {
