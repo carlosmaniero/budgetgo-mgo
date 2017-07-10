@@ -3,10 +3,13 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
+	"strings"
+	"time"
+
+	"github.com/carlosmaniero/budgetgo/domain"
 	"github.com/carlosmaniero/budgetgo/interfaces/repositories/memory_repository"
 	"github.com/carlosmaniero/budgetgo/interfaces/serializers"
-	"net/http"
-	"time"
 )
 
 func (handlers *Handlers) UnserializerErrorHandler(err error, response http.ResponseWriter) {
@@ -57,4 +60,16 @@ func (handlers *Handlers) getErrorResponse(err interface{}) serializers.ErrorRes
 			Message: "An error was occurred check your request body",
 		}
 	}
+}
+
+func (handlers *Handlers) convertTransactionFieldErrors(errors []error) []*serializers.FieldErrorData {
+	fieldErrors := make([]*serializers.FieldErrorData, len(errors))
+	for index, value := range errors {
+		err := value.(*domain.FieldValidationError)
+		fieldErrors[index] = &serializers.FieldErrorData{
+			Field:   strings.ToLower(err.Field),
+			Message: err.Message,
+		}
+	}
+	return fieldErrors
 }

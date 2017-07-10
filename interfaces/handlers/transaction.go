@@ -7,7 +7,6 @@ import (
 	"github.com/carlosmaniero/budgetgo/usecases"
 	"github.com/julienschmidt/httprouter"
 	"net/http"
-	"strings"
 )
 
 func (handlers *Handlers) TransactionCreate(response http.ResponseWriter, request *http.Request, _ httprouter.Params) {
@@ -58,16 +57,4 @@ func (handlers *Handlers) TransactionCreateErrorHandler(err error, response http
 		data := serializers.SerializeErrorResponse(&errorResponse)
 		fmt.Fprint(response, string(data))
 	}
-}
-
-func (handlers *Handlers) convertTransactionFieldErrors(errors []error) []*serializers.FieldErrorData {
-	fieldErrors := make([]*serializers.FieldErrorData, len(errors))
-	for index, value := range errors {
-		err := value.(*domain.FieldValidationError)
-		fieldErrors[index] = &serializers.FieldErrorData{
-			Field:   strings.ToLower(err.Field),
-			Message: err.Message,
-		}
-	}
-	return fieldErrors
 }
