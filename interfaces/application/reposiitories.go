@@ -6,5 +6,5 @@ import (
 )
 
 func registerRepositories() {
-	repositories.RegisterTransactionRepository("memory", memory_repository.NewMemoryRepository)
+	repositories.RegisterTransactionRepository("memory", memory_repository.NewMemoryTransactionRepository)
 }
