@@ -3,6 +3,7 @@ package domain
 import "time"
 
 type Transaction struct {
+	Id          string
 	Description string
 	Amount      float64
 	Date        time.Time

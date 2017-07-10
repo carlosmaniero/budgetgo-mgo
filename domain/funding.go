@@ -1,6 +1,7 @@
 package domain
 
 type Funding struct {
+	Id         string
 	Name       string
 	Limit      float64
 	Amount     float64
