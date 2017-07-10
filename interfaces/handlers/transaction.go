@@ -43,7 +43,7 @@ func (handlers *Handlers) TransactionCreateErrorHandler(err error, response http
 		errorResponse := serializers.TransactionValidationErrorData{
 			Type:    "validation_error",
 			Message: err.Error(),
-			Errors:  handlers.convertTransactionFieldErrors(err.Errors),
+			Errors:  handlers.convertFieldValidationErrors(err.Errors),
 		}
 
 		data := serializers.SerializeTransactionValidationError(&errorResponse)

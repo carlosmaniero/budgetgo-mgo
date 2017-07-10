@@ -62,7 +62,7 @@ func (handlers *Handlers) getErrorResponse(err interface{}) serializers.ErrorRes
 	}
 }
 
-func (handlers *Handlers) convertTransactionFieldErrors(errors []error) []*serializers.FieldErrorData {
+func (handlers *Handlers) convertFieldValidationErrors(errors []error) []*serializers.FieldErrorData {
 	fieldErrors := make([]*serializers.FieldErrorData, len(errors))
 	for index, value := range errors {
 		err := value.(*domain.FieldValidationError)
