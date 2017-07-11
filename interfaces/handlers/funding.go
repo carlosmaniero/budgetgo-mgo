@@ -28,6 +28,7 @@ func (handlers *Handlers) FundingCreate(response http.ResponseWriter, request *h
 	}
 
 	response.Header().Set("Content-Type", "application/json")
+	response.WriteHeader(201)
 	fmt.Fprint(response, string(serializers.SerializeFunding(funding)))
 }
 
