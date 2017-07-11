@@ -19,7 +19,7 @@ func TestSpecFundingRegistering(t *testing.T) {
 			Convey("When I register it", func() {
 				repository := fundingRepository{storedTotal: 0}
 				iterator := FundingInteractor{&repository}
-				err, funding := iterator.Register(name, amount, closingDay, limit)
+				funding, err := iterator.Register(name, amount, closingDay, limit)
 
 				Convey("Then The funding was registered succesfully", func() {
 					So(err, ShouldBeNil)
@@ -48,7 +48,7 @@ func TestSpecFundingRegistering(t *testing.T) {
 			Convey("When I register it", func() {
 				repository := fundingRepository{storedTotal: 0}
 				iterator := FundingInteractor{&repository}
-				err, _ := iterator.Register(name, amount, closingDay, limit)
+				_, err := iterator.Register(name, amount, closingDay, limit)
 
 				Convey("Then The funding was registered succesfully", func() {
 					So(err, ShouldNotBeNil)

@@ -9,7 +9,7 @@ type TransactionInteractor struct {
 	Repository TransactionRepository
 }
 
-func (iterator *TransactionInteractor) Register(description string, amount float64, date time.Time, funding domain.Funding) (error, *domain.Transaction) {
+func (iterator *TransactionInteractor) Register(description string, amount float64, date time.Time, funding domain.Funding) (*domain.Transaction, error) {
 	transaction := domain.Transaction{
 		Description: description,
 		Amount:      amount,
@@ -19,12 +19,12 @@ func (iterator *TransactionInteractor) Register(description string, amount float
 
 	if errs := transaction.Validate(); errs != nil {
 		err := TransactionValidationErrors{errs}
-		return &err, nil
+		return nil, &err
 	}
 
 	id := iterator.Repository.Store(&transaction)
 	transaction.Id = id
-	return nil, &transaction
+	return &transaction, nil
 }
 
 type TransactionRepository interface {

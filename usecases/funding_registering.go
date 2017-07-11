@@ -8,7 +8,7 @@ type FundingInteractor struct {
 	Repository FundingRepository
 }
 
-func (iterator *FundingInteractor) Register(name string, amount float64, closingDay int, limit float64) (error, *domain.Funding) {
+func (iterator *FundingInteractor) Register(name string, amount float64, closingDay int, limit float64) (*domain.Funding, error) {
 	funding := domain.Funding{
 		Name:       name,
 		Amount:     amount,
@@ -18,11 +18,11 @@ func (iterator *FundingInteractor) Register(name string, amount float64, closing
 
 	if errs := funding.Validate(); errs != nil {
 		err := FundingValidationErrors{errs}
-		return &err, nil
+		return nil, &err
 	}
 
 	funding.Id = iterator.Repository.Store(&funding)
-	return nil, &funding
+	return &funding, nil
 }
 
 type FundingRepository interface {

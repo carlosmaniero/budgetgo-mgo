@@ -32,7 +32,7 @@ func TestSpec(t *testing.T) {
 					expectedFunding:     funding,
 				}
 				iterator := TransactionInteractor{Repository: &repository}
-				err, transaction := iterator.Register(description, amount, date, funding)
+				transaction, err := iterator.Register(description, amount, date, funding)
 
 				Convey("Then the transaction is saved successly", func() {
 					So(err, ShouldBeNil)
@@ -62,7 +62,7 @@ func TestSpec(t *testing.T) {
 					expectedAmount:      amount,
 				}
 				iterator := TransactionInteractor{Repository: &repository}
-				err, _ := iterator.Register(description, amount, date, funding)
+				_, err := iterator.Register(description, amount, date, funding)
 
 				Convey("Then the transaction isn't saved", func() {
 					So(err, ShouldNotBeNil)

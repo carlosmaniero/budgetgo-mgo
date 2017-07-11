@@ -22,7 +22,7 @@ func (handlers *Handlers) TransactionCreate(response http.ResponseWriter, reques
 		return
 	}
 
-	err, transaction := iterator.Register(data.Description, data.Amount, data.Date, funding)
+	transaction, err := iterator.Register(data.Description, data.Amount, data.Date, funding)
 
 	if err != nil {
 		handlers.TransactionCreateErrorHandler(err, response)

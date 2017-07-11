@@ -20,7 +20,7 @@ func (handlers *Handlers) FundingCreate(response http.ResponseWriter, request *h
 		return
 	}
 
-	err, funding := iteractor.Register(data.Name, data.Amount, data.ClosingDay, data.Limit)
+	funding, err := iteractor.Register(data.Name, data.Amount, data.ClosingDay, data.Limit)
 
 	if err != nil {
 		handlers.FundingCreateErrorHandler(err, response)
