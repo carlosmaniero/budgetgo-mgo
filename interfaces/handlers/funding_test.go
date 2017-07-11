@@ -28,5 +28,20 @@ func TestSpecFounding(t *testing.T) {
 				})
 			})
 		})
+
+		Convey("Given I've a invalid transaction json representation", func() {
+			request := http.Request{
+				Body: NewRequestBodyMock("{\"name\": \"\", \"closing_day\": 1}"),
+			}
+
+			Convey("When I sent it to the handler", func() {
+				handlers.FundingCreate(&fundingResponse, &request, nil)
+
+				Convey("Then the funding was not created successly", func() {
+					So(fundingResponse.ResponseBody, ShouldContainSubstring, "The funding has validation errors")
+					So(fundingResponse.StatusCode, ShouldEqual, 400)
+				})
+			})
+		})
 	})
 }
