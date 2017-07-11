@@ -36,6 +36,7 @@ func TestSpecFounding(t *testing.T) {
 	Convey("Scenario: Serializing on transaction", t, func() {
 		Convey("Given I've a transaction", func() {
 			transaction := domain.Transaction{
+				Id:          "my-id",
 				Description: "5 beers",
 				Amount:      22.90,
 				Date:        time.Now(),
@@ -46,7 +47,7 @@ func TestSpecFounding(t *testing.T) {
 
 				Convey("Then I can see the data serialized", func() {
 					strDate := transaction.Date.Format(time.RFC3339Nano)
-					So(data, ShouldEqual, "{\"description\":\"5 beers\",\"amount\":22.9,\"date\":\""+strDate+"\"}")
+					So(data, ShouldEqual, "{\"id\":\"my-id\",\"description\":\"5 beers\",\"amount\":22.9,\"date\":\""+strDate+"\"}")
 				})
 			})
 		})

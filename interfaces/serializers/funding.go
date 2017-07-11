@@ -14,6 +14,14 @@ type FundingData struct {
 	ClosingDay int     `json:"closing_day"`
 }
 
+type FundingResponseData struct {
+	Id         string  `json:"id"`
+	Name       string  `json:"name"`
+	Limit      float64 `json:"limit"`
+	Amount     float64 `json:"amount"`
+	ClosingDay int     `json:"closing_day"`
+}
+
 type FundingValidationErrorData struct {
 	Type    string            `json:"type"`
 	Message string            `json:"message"`
@@ -27,7 +35,8 @@ func UnserializeFundingData(reader io.Reader) (*FundingData, error) {
 }
 
 func SerializeFunding(funding *domain.Funding) []byte {
-	data := FundingData{
+	data := FundingResponseData{
+		Id:         funding.Id,
 		Name:       funding.Name,
 		Amount:     funding.Amount,
 		ClosingDay: funding.ClosingDay,

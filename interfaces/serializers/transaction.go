@@ -13,6 +13,13 @@ type TransactionData struct {
 	Date        time.Time `json:"date"`
 }
 
+type TransactionResponseData struct {
+	Id          string    `json:"id"`
+	Description string    `json:"description"`
+	Amount      float64   `json:"amount"`
+	Date        time.Time `json:"date"`
+}
+
 type TransactionValidationErrorData struct {
 	Type    string            `json:"type"`
 	Message string            `json:"message"`
@@ -31,7 +38,8 @@ func UnserializeTransactionData(reader io.Reader) (*TransactionData, error) {
 }
 
 func SerializeTransaction(transaction *domain.Transaction) []byte {
-	data := TransactionData{
+	data := TransactionResponseData{
+		Id:          transaction.Id,
 		Description: transaction.Description,
 		Amount:      transaction.Amount,
 		Date:        transaction.Date,
