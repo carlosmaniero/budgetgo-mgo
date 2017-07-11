@@ -1,9 +1,11 @@
 package usecases
 
 import (
+	"strconv"
+	"testing"
+
 	"github.com/carlosmaniero/budgetgo/domain"
 	. "github.com/smartystreets/goconvey/convey"
-	"testing"
 )
 
 func TestSpecFundingRegistering(t *testing.T) {
@@ -29,6 +31,10 @@ func TestSpecFundingRegistering(t *testing.T) {
 
 				Convey("And the data is saved inside the repository", func() {
 					So(repository.storedTotal, ShouldEqual, 1)
+				})
+
+				Convey("And the funding has the created id", func() {
+					So(funding.Id, ShouldEqual, "1")
 				})
 			})
 		})
@@ -61,6 +67,7 @@ type fundingRepository struct {
 	storedTotal int
 }
 
-func (t *fundingRepository) Store(funding *domain.Funding) {
+func (t *fundingRepository) Store(funding *domain.Funding) string {
 	t.storedTotal++
+	return strconv.Itoa(t.storedTotal)
 }

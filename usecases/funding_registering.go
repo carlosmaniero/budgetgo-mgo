@@ -21,16 +21,16 @@ func (iterator *FundingInteractor) Register(name string, amount float64, closing
 		return &err, nil
 	}
 
-	iterator.Repository.Store(&funding)
+	funding.Id = iterator.Repository.Store(&funding)
 	return nil, &funding
+}
+
+type FundingRepository interface {
+	Store(*domain.Funding) string
 }
 
 type FundingValidationErrors struct {
 	Errors []error
-}
-
-type FundingRepository interface {
-	Store(*domain.Funding)
 }
 
 func (err *FundingValidationErrors) Error() string {

@@ -5,20 +5,8 @@ import (
 	"time"
 )
 
-type TransactionRepository interface {
-	Store(*domain.Transaction)
-}
-
 type TransactionInteractor struct {
 	Repository TransactionRepository
-}
-
-type TransactionValidationErrors struct {
-	Errors []error
-}
-
-func (err *TransactionValidationErrors) Error() string {
-	return "The transaction has validation errors"
 }
 
 func (iterator *TransactionInteractor) Register(description string, amount float64, date time.Time, funding domain.Funding) (error, *domain.Transaction) {
@@ -34,6 +22,19 @@ func (iterator *TransactionInteractor) Register(description string, amount float
 		return &err, nil
 	}
 
-	iterator.Repository.Store(&transaction)
+	id := iterator.Repository.Store(&transaction)
+	transaction.Id = id
 	return nil, &transaction
+}
+
+type TransactionRepository interface {
+	Store(*domain.Transaction) string
+}
+
+type TransactionValidationErrors struct {
+	Errors []error
+}
+
+func (err *TransactionValidationErrors) Error() string {
+	return "The transaction has validation errors"
 }

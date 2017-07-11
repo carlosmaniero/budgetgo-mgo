@@ -1,16 +1,19 @@
 package memory_repository
 
 import (
+	"strconv"
+
 	"github.com/carlosmaniero/budgetgo/domain"
 	"github.com/carlosmaniero/budgetgo/usecases"
 )
 
 type MemoryFundingRepository struct {
-	funding []*domain.Funding
+	fundings []*domain.Funding
 }
 
-func (repository *MemoryFundingRepository) Store(funding *domain.Funding) {
-	repository.funding = append(repository.funding, funding)
+func (repository *MemoryFundingRepository) Store(funding *domain.Funding) string {
+	repository.fundings = append(repository.fundings, funding)
+	return strconv.Itoa(len(repository.fundings))
 }
 
 func NewMemoryFundingRepository() usecases.FundingRepository {

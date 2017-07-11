@@ -1,10 +1,12 @@
 package usecases
 
 import (
-	"github.com/carlosmaniero/budgetgo/domain"
-	. "github.com/smartystreets/goconvey/convey"
+	"strconv"
 	"testing"
 	"time"
+
+	"github.com/carlosmaniero/budgetgo/domain"
+	. "github.com/smartystreets/goconvey/convey"
 )
 
 func TestSpec(t *testing.T) {
@@ -29,7 +31,7 @@ func TestSpec(t *testing.T) {
 					expectedFunding:     funding,
 				}
 				iterator := TransactionInteractor{Repository: &repository}
-				err, _ := iterator.Register(description, amount, date, funding)
+				err, transaction := iterator.Register(description, amount, date, funding)
 
 				Convey("Then the transaction is saved successly", func() {
 					So(err, ShouldBeNil)
@@ -37,6 +39,10 @@ func TestSpec(t *testing.T) {
 
 				Convey("And the data is saved inside the repository", func() {
 					So(repository.storedTotal, ShouldEqual, 1)
+				})
+
+				Convey("And the transaction has the created id", func() {
+					So(transaction.Id, ShouldEqual, "1")
 				})
 			})
 		})
@@ -61,7 +67,7 @@ func TestSpec(t *testing.T) {
 					So(err, ShouldNotBeNil)
 				})
 
-				Convey("And the data is saved inside the repository", func() {
+				Convey("And the data isn't saved inside the repository", func() {
 					So(repository.storedTotal, ShouldEqual, 0)
 				})
 			})
@@ -78,8 +84,9 @@ type transactionRepository struct {
 	expectedFunding     domain.Funding
 }
 
-func (t *transactionRepository) Store(transaction *domain.Transaction) {
+func (t *transactionRepository) Store(transaction *domain.Transaction) string {
 	t.storedTotal++
 	So(transaction.Description, ShouldEqual, t.expectedDescription)
 	So(transaction.Amount, ShouldEqual, t.expectedAmount)
+	return strconv.Itoa(t.storedTotal)
 }
