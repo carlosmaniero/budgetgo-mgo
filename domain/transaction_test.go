@@ -14,6 +14,7 @@ func TestSpec(t *testing.T) {
 				Amount:      10.5,
 				Date:        time.Now(),
 				Funding: Funding{
+					Id:         "funding-id",
 					Name:       "Bank account",
 					Limit:      1000,
 					Amount:     0,
@@ -58,6 +59,31 @@ func TestSpec(t *testing.T) {
 
 				Convey("And I can see that the I can't register an transaction a mouth ago", func() {
 					shouldHaveErrorIn(errors, "Date", "The \"Date\" field can't be greater than one month")
+				})
+			})
+		})
+		Convey("Given I've a Transaction with description, amount different of zero and a valid Funding without id", func() {
+			transaction := Transaction{
+				Description: "4 beers",
+				Amount:      10.5,
+				Date:        time.Now(),
+				Funding: Funding{
+					Name:       "Bank account",
+					Limit:      1000,
+					Amount:     0,
+					ClosingDay: 1,
+				},
+			}
+
+			Convey("When I try to validate the transaction", func() {
+				errors := transaction.Validate()
+
+				Convey("Then the Transaction is valid", func() {
+					So(errors, ShouldNotBeNil)
+				})
+
+				Convey("And I can see that the Funding is invalid", func() {
+					shouldHaveErrorIn(errors, "Funding", "The \"Funding\" field need to have an ID")
 				})
 			})
 		})

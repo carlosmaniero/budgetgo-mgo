@@ -28,6 +28,9 @@ func (transaction *Transaction) ValidateFunding() error {
 	if transaction.Funding.Validate() != nil {
 		return &FieldValidationError{"Funding", "isn't valid"}
 	}
+	if len(transaction.Funding.Id) == 0 {
+		return &FieldValidationError{"Funding", "need to have an ID"}
+	}
 	return nil
 }
 
