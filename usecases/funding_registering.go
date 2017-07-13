@@ -1,6 +1,8 @@
 package usecases
 
 import (
+	"errors"
+
 	"github.com/carlosmaniero/budgetgo/domain"
 )
 
@@ -25,8 +27,19 @@ func (iterator *FundingInteractor) Register(name string, amount float64, closing
 	return &funding, nil
 }
 
+func (iterator *FundingInteractor) Retrieve(id string) (*domain.Funding, error) {
+	if funding := iterator.Repository.FindById(id); funding != nil {
+		return funding, nil
+	}
+
+	return nil, FundingNotFound
+}
+
+var FundingNotFound = errors.New("The funding was not found.")
+
 type FundingRepository interface {
 	Store(*domain.Funding) string
+	FindById(string) *domain.Funding
 }
 
 type FundingValidationErrors struct {

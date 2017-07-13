@@ -9,7 +9,7 @@ import (
 )
 
 func TestSpecFundingRegistering(t *testing.T) {
-	Convey("Scenario: Creating an funding", t, func() {
+	Convey("Scenario: Creating a funding", t, func() {
 		Convey("Given I've a valid funding", func() {
 			name := "Bank account"
 			amount := 10.0
@@ -62,12 +62,51 @@ func TestSpecFundingRegistering(t *testing.T) {
 	})
 }
 
+func TestSpecFundingRetrieve(t *testing.T) {
+	Convey("Scenario: Retrieve an funding", t, func() {
+		repository := fundingRepository{storedTotal: 0}
+		iteractor := FundingInteractor{&repository}
+		Convey("Given I've a registred funding", func() {
+			fundingCreated, _ := iteractor.Register("Beer account", 10.0, 10, 10.0)
+
+			Convey("When I retrieve the registred transaction", func() {
+				fundingRetrieved, _ := iteractor.Retrieve(fundingCreated.Id)
+
+				Convey("Then it is returned", func() {
+					So(fundingRetrieved, ShouldEqual, fundingCreated)
+					So(fundingCreated.Id, ShouldEqual, repository.findedId)
+				})
+			})
+		})
+		Convey("Given I've a unregistred funding", func() {
+			repository.stored = nil
+
+			Convey("When I try to retrieve it", func() {
+				fundingRetrieved, err := iteractor.Retrieve("id-not-found")
+
+				Convey("Then need to return an error", func() {
+					So(fundingRetrieved, ShouldBeNil)
+					So(err, ShouldEqual, FundingNotFound)
+				})
+			})
+		})
+	})
+}
+
 // Mocked Repository
 type fundingRepository struct {
 	storedTotal int
+	stored      *domain.Funding
+	findedId    string
 }
 
-func (t *fundingRepository) Store(funding *domain.Funding) string {
-	t.storedTotal++
-	return strconv.Itoa(t.storedTotal)
+func (f *fundingRepository) FindById(id string) *domain.Funding {
+	f.findedId = id
+	return f.stored
+}
+
+func (f *fundingRepository) Store(funding *domain.Funding) string {
+	f.storedTotal++
+	f.stored = funding
+	return strconv.Itoa(f.storedTotal)
 }
