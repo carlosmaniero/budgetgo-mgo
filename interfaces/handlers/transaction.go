@@ -13,7 +13,7 @@ func (handlers *Handlers) TransactionCreate(response http.ResponseWriter, reques
 	defer handlers.catchPanics(response)
 
 	iterator := usecases.TransactionInteractor{Repository: handlers.Application.TransactionRepository}
-	funding := domain.Funding{Name: "Default funding", Limit: 1000, Amount: 0, ClosingDay: 1}
+	funding := domain.Funding{Id: "fake-funding", Name: "Default funding", Limit: 1000, Amount: 0, ClosingDay: 1}
 
 	data, err := serializers.UnserializeTransactionData(request.Body)
 
@@ -29,6 +29,7 @@ func (handlers *Handlers) TransactionCreate(response http.ResponseWriter, reques
 		return
 	}
 
+	response.WriteHeader(http.StatusCreated)
 	response.Header().Set("Content-Type", "application/json")
 	fmt.Fprint(response, string(serializers.SerializeTransaction(transaction)))
 }
