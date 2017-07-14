@@ -24,7 +24,7 @@ func (repository *MemoryFundingRepository) Store(funding *domain.Funding) string
 func (repository *MemoryFundingRepository) FindByID(id string) *domain.Funding {
 	index, err := strconv.Atoi(id)
 
-	if err != nil {
+	if err != nil || len(repository.fundings) < index {
 		return nil
 	}
 

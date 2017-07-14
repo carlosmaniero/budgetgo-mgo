@@ -14,23 +14,29 @@ func (handlers *Handlers) FundingCreate(response http.ResponseWriter, request *h
 	defer handlers.catchPanics(response)
 
 	iteractor := usecases.FundingInteractor{Repository: handlers.Application.FundingRepository}
-	data, err := serializers.UnserializeFundingData(request.Body)
+	serializer := serializers.FundingSerializer{}
 
-	if err != nil {
+	if err := serializer.Unserialize(request.Body); err != nil {
 		handlers.unserializerErrorHandler(err, response)
 		return
 	}
 
-	funding, err := iteractor.Register(data.Name, data.Amount, data.ClosingDay, data.Limit)
+	funding, err := iteractor.Register(
+		serializer.Name,
+		serializer.Amount,
+		serializer.ClosingDay,
+		serializer.Limit,
+	)
 
 	if err != nil {
 		handlers.fundingCreateErrorHandler(err, response)
 		return
 	}
 
+	serializer.Loads(funding)
 	response.Header().Set("Content-Type", "application/json")
 	response.WriteHeader(201)
-	fmt.Fprint(response, string(serializers.SerializeFunding(funding)))
+	response.Write(serializer.Serialize())
 }
 
 // FundingRetrieve is the handler of the funding retrieve entrypoint
@@ -52,7 +58,9 @@ func (handlers *Handlers) FundingRetrieve(response http.ResponseWriter, request 
 		return
 	}
 
-	fmt.Fprint(response, string(serializers.SerializeFunding(funding)))
+	serializer := serializers.FundingSerializer{}
+	serializer.Loads(funding)
+	response.Write(serializer.Serialize())
 }
 
 // Error handler of the funding creation
@@ -63,14 +71,13 @@ func (handlers *Handlers) fundingCreateErrorHandler(err error, response http.Res
 	switch err := err.(type) {
 	case *usecases.FundingValidationErrors:
 
-		errorResponse := serializers.FundingValidationErrorData{
+		serializer := serializers.FundingValidationErrorData{
 			Type:    "validation_error",
 			Message: err.Error(),
 			Errors:  handlers.convertFieldValidationErrors(err.Errors),
 		}
+		response.Write(serializer.Serialize())
 
-		data := serializers.SerializeFundingValidationError(&errorResponse)
-		fmt.Fprint(response, string(data))
 	default:
 		errorResponse := serializers.ErrorResponseData{
 			Type:    "domain_error",

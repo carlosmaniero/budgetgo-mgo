@@ -76,7 +76,7 @@ func TestSpecFounding(t *testing.T) {
 					fundingResponse := HandlerResponseMock{}
 					request := http.Request{}
 					params := make(httprouter.Params, 0)
-					params = append(params, httprouter.Param{Key: "id", Value: "not-found"})
+					params = append(params, httprouter.Param{Key: "id", Value: "666"})
 					handlers.FundingRetrieve(&fundingResponse, &request, params)
 
 					Convey("Then I can see that the funding does not exists", func() {
