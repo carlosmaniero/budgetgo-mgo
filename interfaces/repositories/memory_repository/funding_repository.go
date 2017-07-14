@@ -16,8 +16,14 @@ func (repository *MemoryFundingRepository) Store(funding *domain.Funding) string
 	return strconv.Itoa(len(repository.fundings))
 }
 
-func (m *MemoryFundingRepository) FindById(string) *domain.Funding {
-	panic("not implemented")
+func (repository *MemoryFundingRepository) FindById(id string) *domain.Funding {
+	index, err := strconv.Atoi(id)
+
+	if err != nil {
+		return nil
+	}
+
+	return repository.fundings[index-1]
 }
 
 func NewMemoryFundingRepository() usecases.FundingRepository {

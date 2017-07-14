@@ -5,11 +5,13 @@ import (
 	"testing"
 
 	"github.com/carlosmaniero/budgetgo/interfaces/application"
+	"github.com/carlosmaniero/budgetgo/usecases"
+	"github.com/julienschmidt/httprouter"
 	. "github.com/smartystreets/goconvey/convey"
 )
 
 func TestSpecFounding(t *testing.T) {
-	Convey("Scenario: Registering an funding", t, func() {
+	Convey("Scenario: Registering a funding", t, func() {
 		app := application.Init()
 		handlers := Handlers{Application: app}
 		fundingResponse := HandlerResponseMock{}
@@ -40,6 +42,47 @@ func TestSpecFounding(t *testing.T) {
 				Convey("Then the funding was not created successly", func() {
 					So(fundingResponse.ResponseBody, ShouldContainSubstring, "The funding has validation errors")
 					So(fundingResponse.StatusCode, ShouldEqual, 400)
+				})
+			})
+		})
+	})
+
+	Convey("Scenario: Retrieving a funding", t, func() {
+		app := application.Init()
+		handlers := Handlers{Application: app}
+
+		Convey("Given I've a created funding", func() {
+			iteractor := usecases.FundingInteractor{Repository: app.FundingRepository}
+			transaction, err := iteractor.Register("Beer Funding", 1, 2, 3)
+
+			if err != nil {
+				panic(err)
+			}
+
+			Convey("When I get it from the funding entrypoint", func() {
+				fundingResponse := HandlerResponseMock{}
+				request := http.Request{}
+				params := make(httprouter.Params, 0)
+				params = append(params, httprouter.Param{Key: "id", Value: transaction.Id})
+				handlers.FundingRetrieve(&fundingResponse, &request, params)
+
+				Convey("Then the funding is returned", func() {
+					So(fundingResponse.ResponseBody, ShouldContainSubstring, "{\"id\":\"1\",\"name\":\"Beer Funding\",\"limit\":3,\"amount\":1,\"closing_day\":2}")
+				})
+			})
+
+			Convey("Given I've a uncreated funding", func() {
+				Convey("When I get it from the funding entrypoint", func() {
+					fundingResponse := HandlerResponseMock{}
+					request := http.Request{}
+					params := make(httprouter.Params, 0)
+					params = append(params, httprouter.Param{Key: "id", Value: "not-found"})
+					handlers.FundingRetrieve(&fundingResponse, &request, params)
+
+					Convey("Then I can see that the funding does not exists", func() {
+						So(fundingResponse.ResponseBody, ShouldContainSubstring, "{\"type\":\"not-found\",\"message\":\"The funding was not found.\"}")
+						So(fundingResponse.StatusCode, ShouldEqual, 404)
+					})
 				})
 			})
 		})

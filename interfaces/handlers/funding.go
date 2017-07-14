@@ -32,6 +32,27 @@ func (handlers *Handlers) FundingCreate(response http.ResponseWriter, request *h
 	fmt.Fprint(response, string(serializers.SerializeFunding(funding)))
 }
 
+func (handlers *Handlers) FundingRetrieve(response http.ResponseWriter, request *http.Request, params httprouter.Params) {
+	defer handlers.catchPanics(response)
+
+	iteractor := usecases.FundingInteractor{Repository: handlers.Application.FundingRepository}
+	funding, err := iteractor.Retrieve(params.ByName("id"))
+	response.Header().Set("Content-Type", "application/json")
+
+	if err != nil {
+		errorData := serializers.ErrorResponseData{
+			Type:    "not-found",
+			Message: err.Error(),
+		}
+
+		response.WriteHeader(http.StatusNotFound)
+		fmt.Fprint(response, string(serializers.SerializeErrorResponse(&errorData)))
+		return
+	}
+
+	fmt.Fprint(response, string(serializers.SerializeFunding(funding)))
+}
+
 func (handlers *Handlers) FundingCreateErrorHandler(err error, response http.ResponseWriter) {
 	response.Header().Set("Content-Type", "application/json")
 	response.WriteHeader(http.StatusBadRequest)
