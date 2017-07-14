@@ -36,7 +36,7 @@ func TestSpecFounding(t *testing.T) {
 	Convey("Scenario: Serializing on transaction", t, func() {
 		Convey("Given I've a transaction", func() {
 			transaction := domain.Transaction{
-				Id:          "my-id",
+				ID:          "my-id",
 				Description: "5 beers",
 				Amount:      22.90,
 				Date:        time.Now(),

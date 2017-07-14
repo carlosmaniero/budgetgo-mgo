@@ -9,23 +9,24 @@ import (
 	"net/http"
 )
 
+// TransactionCreate is the handler of the transaction creation entrypoint
 func (handlers *Handlers) TransactionCreate(response http.ResponseWriter, request *http.Request, _ httprouter.Params) {
 	defer handlers.catchPanics(response)
 
 	iterator := usecases.TransactionInteractor{Repository: handlers.Application.TransactionRepository}
-	funding := domain.Funding{Id: "fake-funding", Name: "Default funding", Limit: 1000, Amount: 0, ClosingDay: 1}
+	funding := domain.Funding{ID: "fake-funding", Name: "Default funding", Limit: 1000, Amount: 0, ClosingDay: 1}
 
 	data, err := serializers.UnserializeTransactionData(request.Body)
 
 	if err != nil {
-		handlers.UnserializerErrorHandler(err, response)
+		handlers.unserializerErrorHandler(err, response)
 		return
 	}
 
 	transaction, err := iterator.Register(data.Description, data.Amount, data.Date, funding)
 
 	if err != nil {
-		handlers.TransactionCreateErrorHandler(err, response)
+		handlers.transactionCreateErrorHandler(err, response)
 		return
 	}
 
@@ -34,7 +35,8 @@ func (handlers *Handlers) TransactionCreate(response http.ResponseWriter, reques
 	fmt.Fprint(response, string(serializers.SerializeTransaction(transaction)))
 }
 
-func (handlers *Handlers) TransactionCreateErrorHandler(err error, response http.ResponseWriter) {
+// This is the error handler of the transaction creation
+func (handlers *Handlers) transactionCreateErrorHandler(err error, response http.ResponseWriter) {
 	response.Header().Set("Content-Type", "application/json")
 	response.WriteHeader(http.StatusBadRequest)
 

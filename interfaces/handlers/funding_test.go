@@ -12,7 +12,7 @@ import (
 
 func TestSpecFounding(t *testing.T) {
 	Convey("Scenario: Registering a funding", t, func() {
-		app := application.Init()
+		app := application.New()
 		handlers := Handlers{Application: app}
 		fundingResponse := HandlerResponseMock{}
 
@@ -48,7 +48,7 @@ func TestSpecFounding(t *testing.T) {
 	})
 
 	Convey("Scenario: Retrieving a funding", t, func() {
-		app := application.Init()
+		app := application.New()
 		handlers := Handlers{Application: app}
 
 		Convey("Given I've a created funding", func() {
@@ -63,7 +63,7 @@ func TestSpecFounding(t *testing.T) {
 				fundingResponse := HandlerResponseMock{}
 				request := http.Request{}
 				params := make(httprouter.Params, 0)
-				params = append(params, httprouter.Param{Key: "id", Value: transaction.Id})
+				params = append(params, httprouter.Param{Key: "id", Value: transaction.ID})
 				handlers.FundingRetrieve(&fundingResponse, &request, params)
 
 				Convey("Then the funding is returned", func() {
@@ -80,7 +80,7 @@ func TestSpecFounding(t *testing.T) {
 					handlers.FundingRetrieve(&fundingResponse, &request, params)
 
 					Convey("Then I can see that the funding does not exists", func() {
-						So(fundingResponse.ResponseBody, ShouldContainSubstring, "{\"type\":\"not-found\",\"message\":\"The funding was not found.\"}")
+						So(fundingResponse.ResponseBody, ShouldContainSubstring, "{\"type\":\"not-found\",\"message\":\"the funding was not found\"}")
 						So(fundingResponse.StatusCode, ShouldEqual, 404)
 					})
 				})

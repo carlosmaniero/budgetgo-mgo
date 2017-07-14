@@ -11,7 +11,7 @@ import (
 
 func TestSpecTransaction(t *testing.T) {
 	Convey("Scenario: Registering an transaction", t, func() {
-		app := application.Init()
+		app := application.New()
 		handlers := Handlers{Application: app}
 		transactionResponse := HandlerResponseMock{}
 

@@ -9,6 +9,7 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
+// FundingCreate is the handler of the funding creation entrypoint
 func (handlers *Handlers) FundingCreate(response http.ResponseWriter, request *http.Request, _ httprouter.Params) {
 	defer handlers.catchPanics(response)
 
@@ -16,14 +17,14 @@ func (handlers *Handlers) FundingCreate(response http.ResponseWriter, request *h
 	data, err := serializers.UnserializeFundingData(request.Body)
 
 	if err != nil {
-		handlers.UnserializerErrorHandler(err, response)
+		handlers.unserializerErrorHandler(err, response)
 		return
 	}
 
 	funding, err := iteractor.Register(data.Name, data.Amount, data.ClosingDay, data.Limit)
 
 	if err != nil {
-		handlers.FundingCreateErrorHandler(err, response)
+		handlers.fundingCreateErrorHandler(err, response)
 		return
 	}
 
@@ -32,6 +33,7 @@ func (handlers *Handlers) FundingCreate(response http.ResponseWriter, request *h
 	fmt.Fprint(response, string(serializers.SerializeFunding(funding)))
 }
 
+// FundingRetrieve is the handler of the funding retrieve entrypoint
 func (handlers *Handlers) FundingRetrieve(response http.ResponseWriter, request *http.Request, params httprouter.Params) {
 	defer handlers.catchPanics(response)
 
@@ -53,7 +55,8 @@ func (handlers *Handlers) FundingRetrieve(response http.ResponseWriter, request 
 	fmt.Fprint(response, string(serializers.SerializeFunding(funding)))
 }
 
-func (handlers *Handlers) FundingCreateErrorHandler(err error, response http.ResponseWriter) {
+// Error handler of the funding creation
+func (handlers *Handlers) fundingCreateErrorHandler(err error, response http.ResponseWriter) {
 	response.Header().Set("Content-Type", "application/json")
 	response.WriteHeader(http.StatusBadRequest)
 

@@ -11,7 +11,7 @@ import (
 
 func TestSpecError(t *testing.T) {
 	Convey("Scenario: Handlering an error", t, func() {
-		app := application.Init()
+		app := application.New()
 		handlers := Handlers{Application: app}
 
 		Convey("Given I've a handler that raise a panic", func() {

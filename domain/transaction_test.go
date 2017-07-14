@@ -14,7 +14,7 @@ func TestSpec(t *testing.T) {
 				Amount:      10.5,
 				Date:        time.Now(),
 				Funding: Funding{
-					Id:         "funding-id",
+					ID:         "funding-id",
 					Name:       "Bank account",
 					Limit:      1000,
 					Amount:     0,

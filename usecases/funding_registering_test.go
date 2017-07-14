@@ -34,7 +34,7 @@ func TestSpecFundingRegistering(t *testing.T) {
 				})
 
 				Convey("And the funding has the created id", func() {
-					So(funding.Id, ShouldEqual, "1")
+					So(funding.ID, ShouldEqual, "1")
 				})
 			})
 		})
@@ -70,11 +70,11 @@ func TestSpecFundingRetrieve(t *testing.T) {
 			fundingCreated, _ := iteractor.Register("Beer account", 10.0, 10, 10.0)
 
 			Convey("When I retrieve the registred transaction", func() {
-				fundingRetrieved, _ := iteractor.Retrieve(fundingCreated.Id)
+				fundingRetrieved, _ := iteractor.Retrieve(fundingCreated.ID)
 
 				Convey("Then it is returned", func() {
 					So(fundingRetrieved, ShouldEqual, fundingCreated)
-					So(fundingCreated.Id, ShouldEqual, repository.findedId)
+					So(fundingCreated.ID, ShouldEqual, repository.findedID)
 				})
 			})
 		})
@@ -86,7 +86,7 @@ func TestSpecFundingRetrieve(t *testing.T) {
 
 				Convey("Then need to return an error", func() {
 					So(fundingRetrieved, ShouldBeNil)
-					So(err, ShouldEqual, FundingNotFound)
+					So(err, ShouldEqual, ErrFundingNotFound)
 				})
 			})
 		})
@@ -97,11 +97,11 @@ func TestSpecFundingRetrieve(t *testing.T) {
 type fundingRepository struct {
 	storedTotal int
 	stored      *domain.Funding
-	findedId    string
+	findedID    string
 }
 
-func (f *fundingRepository) FindById(id string) *domain.Funding {
-	f.findedId = id
+func (f *fundingRepository) FindByID(id string) *domain.Funding {
+	f.findedID = id
 	return f.stored
 }
 

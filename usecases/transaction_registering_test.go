@@ -16,7 +16,7 @@ func TestSpec(t *testing.T) {
 			amount := 24.99
 			date := time.Now()
 			funding := domain.Funding{
-				Id:         "funding-id",
+				ID:         "funding-id",
 				Name:       "Bank account",
 				Limit:      1000,
 				Amount:     0,
@@ -43,7 +43,7 @@ func TestSpec(t *testing.T) {
 				})
 
 				Convey("And the transaction has the created id", func() {
-					So(transaction.Id, ShouldEqual, "1")
+					So(transaction.ID, ShouldEqual, "1")
 				})
 			})
 		})
