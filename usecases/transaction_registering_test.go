@@ -12,27 +12,23 @@ import (
 func TestSpec(t *testing.T) {
 	Convey("Scenario: Registering a Transaction", t, func() {
 		Convey("Given I've a Valid Transaction", func() {
-			description := "4 beers"
-			amount := 24.99
-			date := time.Now()
-			funding := domain.Funding{
-				ID:         "funding-id",
-				Name:       "Bank account",
-				Limit:      1000,
-				Amount:     0,
-				ClosingDay: 1,
+			transaction := domain.Transaction{
+				Description: "4 beers",
+				Amount:      24.99,
+				Date:        time.Now(),
+				Funding: domain.Funding{
+					ID:         "funding-id",
+					Name:       "Bank account",
+					Limit:      1000,
+					Amount:     0,
+					ClosingDay: 1,
+				},
 			}
 
 			Convey("When I register the transaction", func() {
-				repository := transactionRepository{
-					storedTotal:         0,
-					expectedDescription: description,
-					expectedAmount:      amount,
-					expectedDate:        date,
-					expectedFunding:     funding,
-				}
+				repository := transactionRepository{storedTotal: 0, expectedTransaction: &transaction}
 				iterator := TransactionInteractor{Repository: &repository}
-				transaction, err := iterator.Register(description, amount, date, funding)
+				err := iterator.Register(&transaction)
 
 				Convey("Then the transaction is saved successly", func() {
 					So(err, ShouldBeNil)
@@ -49,20 +45,17 @@ func TestSpec(t *testing.T) {
 		})
 
 		Convey("Given I've a invalid Transaction", func() {
-			description := ""
-			amount := 0.0
-			date := time.Now().AddDate(0, -1, -1)
-			funding := domain.Funding{}
+			transaction := domain.Transaction{
+				Description: "",
+				Amount:      0.0,
+				Date:        time.Now().AddDate(0, -1, -1),
+				Funding:     domain.Funding{},
+			}
 
 			Convey("When I register the transaction", func() {
-				repository := transactionRepository{
-					storedTotal:         0,
-					expectedDescription: description,
-					expectedDate:        date,
-					expectedAmount:      amount,
-				}
+				repository := transactionRepository{storedTotal: 0, expectedTransaction: &transaction}
 				iterator := TransactionInteractor{Repository: &repository}
-				_, err := iterator.Register(description, amount, date, funding)
+				err := iterator.Register(&transaction)
 
 				Convey("Then the transaction isn't saved", func() {
 					So(err, ShouldNotBeNil)
@@ -79,15 +72,11 @@ func TestSpec(t *testing.T) {
 // Mocked Repository
 type transactionRepository struct {
 	storedTotal         int
-	expectedDescription string
-	expectedAmount      float64
-	expectedDate        time.Time
-	expectedFunding     domain.Funding
+	expectedTransaction *domain.Transaction
 }
 
 func (t *transactionRepository) Store(transaction *domain.Transaction) string {
 	t.storedTotal++
-	So(transaction.Description, ShouldEqual, t.expectedDescription)
-	So(transaction.Amount, ShouldEqual, t.expectedAmount)
+	So(transaction, ShouldEqual, t.expectedTransaction)
 	return strconv.Itoa(t.storedTotal)
 }

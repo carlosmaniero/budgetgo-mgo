@@ -2,7 +2,6 @@ package usecases
 
 import (
 	"github.com/carlosmaniero/budgetgo/domain"
-	"time"
 )
 
 // TransactionInteractor contains the transaction usecases
@@ -11,22 +10,15 @@ type TransactionInteractor struct {
 }
 
 // Register a transaction into the repository if transaction is valid
-func (iterator *TransactionInteractor) Register(description string, amount float64, date time.Time, funding domain.Funding) (*domain.Transaction, error) {
-	transaction := domain.Transaction{
-		Description: description,
-		Amount:      amount,
-		Date:        date,
-		Funding:     funding,
-	}
-
+func (iterator *TransactionInteractor) Register(transaction *domain.Transaction) error {
 	if errs := transaction.Validate(); errs != nil {
 		err := ValidationErrors{errs}
-		return nil, &err
+		return &err
 	}
 
-	id := iterator.Repository.Store(&transaction)
+	id := iterator.Repository.Store(transaction)
 	transaction.ID = id
-	return &transaction, nil
+	return nil
 }
 
 // TransactionRepository is the transaction repository specification

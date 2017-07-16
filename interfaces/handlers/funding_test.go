@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"testing"
 
+	"github.com/carlosmaniero/budgetgo/domain"
 	"github.com/carlosmaniero/budgetgo/interfaces/application"
 	"github.com/carlosmaniero/budgetgo/usecases"
 	"github.com/julienschmidt/httprouter"
@@ -53,7 +54,13 @@ func TestSpecFounding(t *testing.T) {
 
 		Convey("Given I've a created funding", func() {
 			iteractor := usecases.FundingInteractor{Repository: app.FundingRepository}
-			transaction, err := iteractor.Register("Beer Funding", 1, 2, 3)
+			funding := domain.Funding{
+				Name:       "Beer account",
+				Amount:     1,
+				ClosingDay: 2,
+				Limit:      3,
+			}
+			err := iteractor.Register(&funding)
 
 			if err != nil {
 				panic(err)
@@ -63,11 +70,11 @@ func TestSpecFounding(t *testing.T) {
 				fundingResponse := HandlerResponseMock{}
 				request := http.Request{}
 				params := make(httprouter.Params, 0)
-				params = append(params, httprouter.Param{Key: "id", Value: transaction.ID})
+				params = append(params, httprouter.Param{Key: "id", Value: funding.ID})
 				handlers.FundingRetrieve(&fundingResponse, &request, params)
 
 				Convey("Then the funding is returned", func() {
-					So(fundingResponse.ResponseBody, ShouldContainSubstring, "{\"id\":\"1\",\"name\":\"Beer Funding\",\"limit\":3,\"amount\":1,\"closing_day\":2}")
+					So(fundingResponse.ResponseBody, ShouldContainSubstring, "{\"id\":\"1\",\"name\":\"Beer account\",\"limit\":3,\"amount\":1,\"closing_day\":2}")
 				})
 			})
 

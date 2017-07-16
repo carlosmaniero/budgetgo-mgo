@@ -12,21 +12,14 @@ type FundingInteractor struct {
 }
 
 // Register a funding into the repository if it is valid
-func (iterator *FundingInteractor) Register(name string, amount float64, closingDay int, limit float64) (*domain.Funding, error) {
-	funding := domain.Funding{
-		Name:       name,
-		Amount:     amount,
-		ClosingDay: closingDay,
-		Limit:      limit,
-	}
-
+func (iterator *FundingInteractor) Register(funding *domain.Funding) error {
 	if errs := funding.Validate(); errs != nil {
 		err := ValidationErrors{errs}
-		return nil, &err
+		return &err
 	}
 
-	funding.ID = iterator.Repository.Store(&funding)
-	return &funding, nil
+	funding.ID = iterator.Repository.Store(funding)
+	return nil
 }
 
 // Retrieve a funding in the repository

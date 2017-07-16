@@ -11,22 +11,21 @@ import (
 func TestSpecFundingRegistering(t *testing.T) {
 	Convey("Scenario: Creating a funding", t, func() {
 		Convey("Given I've a valid funding", func() {
-			name := "Bank account"
-			amount := 10.0
-			closingDay := 1
-			limit := 1000.0
+			funding := domain.Funding{
+				Name:       "Bank account",
+				Amount:     10.0,
+				ClosingDay: 1,
+				Limit:      1000.0,
+			}
 
 			Convey("When I register it", func() {
 				repository := fundingRepository{storedTotal: 0}
 				iterator := FundingInteractor{&repository}
-				funding, err := iterator.Register(name, amount, closingDay, limit)
+
+				err := iterator.Register(&funding)
 
 				Convey("Then The funding was registered succesfully", func() {
 					So(err, ShouldBeNil)
-					So(funding.Name, ShouldEqual, name)
-					So(funding.Amount, ShouldEqual, amount)
-					So(funding.ClosingDay, ShouldEqual, closingDay)
-					So(funding.Limit, ShouldEqual, limit)
 				})
 
 				Convey("And the data is saved inside the repository", func() {
@@ -48,7 +47,15 @@ func TestSpecFundingRegistering(t *testing.T) {
 			Convey("When I register it", func() {
 				repository := fundingRepository{storedTotal: 0}
 				iterator := FundingInteractor{&repository}
-				_, err := iterator.Register(name, amount, closingDay, limit)
+
+				funding := domain.Funding{
+					Name:       name,
+					Amount:     amount,
+					ClosingDay: closingDay,
+					Limit:      limit,
+				}
+
+				err := iterator.Register(&funding)
 
 				Convey("Then The funding was registered succesfully", func() {
 					So(err, ShouldNotBeNil)
@@ -66,8 +73,15 @@ func TestSpecFundingRetrieve(t *testing.T) {
 	Convey("Scenario: Retrieve an funding", t, func() {
 		repository := fundingRepository{storedTotal: 0}
 		iteractor := FundingInteractor{&repository}
+		fundingCreated := domain.Funding{
+			Name:       "Beer account",
+			Amount:     10.0,
+			ClosingDay: 10,
+			Limit:      10.0,
+		}
+
 		Convey("Given I've a registred funding", func() {
-			fundingCreated, _ := iteractor.Register("Beer account", 10.0, 10, 10.0)
+			panic(iteractor.Register(&fundingCreated))
 
 			Convey("When I retrieve the registred transaction", func() {
 				fundingRetrieved, _ := iteractor.Retrieve(fundingCreated.ID)

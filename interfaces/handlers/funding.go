@@ -3,6 +3,7 @@ package handlers
 import (
 	"net/http"
 
+	"github.com/carlosmaniero/budgetgo/domain"
 	"github.com/carlosmaniero/budgetgo/interfaces/serializers"
 	"github.com/carlosmaniero/budgetgo/usecases"
 	"github.com/julienschmidt/httprouter"
@@ -20,19 +21,20 @@ func (handlers *Handlers) FundingCreate(response http.ResponseWriter, request *h
 		return
 	}
 
-	funding, err := iteractor.Register(
-		serializer.Name,
-		serializer.Amount,
-		serializer.ClosingDay,
-		serializer.Limit,
-	)
+	funding := domain.Funding{
+		Name:       serializer.Name,
+		Amount:     serializer.Amount,
+		ClosingDay: serializer.ClosingDay,
+		Limit:      serializer.Limit,
+	}
+	err := iteractor.Register(&funding)
 
 	if err != nil {
 		handlers.usecaseErrorHandler(err, response)
 		return
 	}
 
-	serializer.Loads(funding)
+	serializer.Loads(&funding)
 	response.Header().Set("Content-Type", "application/json")
 	response.WriteHeader(201)
 	response.Write(serializer.Serialize())

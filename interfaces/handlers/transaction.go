@@ -21,14 +21,21 @@ func (handlers *Handlers) TransactionCreate(response http.ResponseWriter, reques
 		return
 	}
 
-	transaction, err := iterator.Register(serializer.Description, serializer.Amount, serializer.Date, funding)
+	transaction := domain.Transaction{
+		Description: serializer.Description,
+		Amount:      serializer.Amount,
+		Date:        serializer.Date,
+		Funding:     funding,
+	}
+
+	err := iterator.Register(&transaction)
 
 	if err != nil {
 		handlers.usecaseErrorHandler(err, response)
 		return
 	}
 
-	serializer.Loads(transaction)
+	serializer.Loads(&transaction)
 
 	response.WriteHeader(http.StatusCreated)
 	response.Header().Set("Content-Type", "application/json")
