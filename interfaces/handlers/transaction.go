@@ -12,12 +12,20 @@ import (
 func (handlers *Handlers) TransactionCreate(response http.ResponseWriter, request *http.Request, _ httprouter.Params) {
 	defer handlers.catchPanics(response)
 
-	iterator := usecases.TransactionInteractor{Repository: handlers.Application.TransactionRepository}
-	funding := domain.Funding{ID: "fake-funding", Name: "Default funding", Limit: 1000, Amount: 0, ClosingDay: 1}
 	serializer := serializers.TransactionResponseSerializer{}
 
 	if err := serializer.Unserialize(request.Body); err != nil {
 		handlers.unserializerErrorHandler(err, response)
+		return
+	}
+
+	iterator := usecases.TransactionInteractor{Repository: handlers.Application.TransactionRepository}
+	fundingIteractor := usecases.FundingInteractor{Repository: handlers.Application.FundingRepository}
+
+	funding, err := fundingIteractor.Retrieve(serializer.FundingID)
+
+	if err != nil {
+		handlers.usecaseErrorHandler(err, response)
 		return
 	}
 
@@ -28,7 +36,7 @@ func (handlers *Handlers) TransactionCreate(response http.ResponseWriter, reques
 		Funding:     funding,
 	}
 
-	err := iterator.Register(&transaction)
+	err = iterator.Register(&transaction)
 
 	if err != nil {
 		handlers.usecaseErrorHandler(err, response)

@@ -60,11 +60,8 @@ func TestSpecFounding(t *testing.T) {
 				ClosingDay: 2,
 				Limit:      3,
 			}
-			err := iteractor.Register(&funding)
 
-			if err != nil {
-				panic(err)
-			}
+			panic(iteractor.Register(&funding))
 
 			Convey("When I get it from the funding entrypoint", func() {
 				fundingResponse := HandlerResponseMock{}

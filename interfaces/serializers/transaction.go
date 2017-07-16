@@ -13,6 +13,7 @@ type TransactionResponseSerializer struct {
 	Description string    `json:"description"`
 	Amount      float64   `json:"amount"`
 	Date        time.Time `json:"date"`
+	FundingID   string    `json:"funding_id,omitempty"`
 }
 
 // Loads the date of a Transaction

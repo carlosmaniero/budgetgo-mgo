@@ -5,7 +5,9 @@ import (
 	"testing"
 	"time"
 
+	"github.com/carlosmaniero/budgetgo/domain"
 	"github.com/carlosmaniero/budgetgo/interfaces/application"
+	"github.com/carlosmaniero/budgetgo/usecases"
 	. "github.com/smartystreets/goconvey/convey"
 )
 
@@ -15,11 +17,20 @@ func TestSpecTransaction(t *testing.T) {
 		handlers := Handlers{Application: app}
 		transactionResponse := HandlerResponseMock{}
 
+		fundingIteractor := usecases.FundingInteractor{Repository: app.FundingRepository}
+		funding := domain.Funding{
+			Name:       "Beer account",
+			Amount:     1,
+			ClosingDay: 2,
+			Limit:      3,
+		}
+		panic(fundingIteractor.Register(&funding))
+
 		Convey("Given I've a valid transaction json representation", func() {
 			now := time.Now().Format(time.RFC3339Nano)
 
 			request := http.Request{
-				Body: NewRequestBodyMock("{\"description\": \"8 beers\", \"amount\": 10, \"date\": \"" + now + "\"}"),
+				Body: NewRequestBodyMock("{\"description\": \"8 beers\", \"funding_id\": \"" + funding.ID + "\", \"amount\": 10, \"date\": \"" + now + "\"}"),
 			}
 
 			Convey("When I sent it to the handler", func() {
