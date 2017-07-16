@@ -16,7 +16,7 @@ func TestSpec(t *testing.T) {
 				Description: "4 beers",
 				Amount:      24.99,
 				Date:        time.Now(),
-				Funding: domain.Funding{
+				Funding: &domain.Funding{
 					ID:         "funding-id",
 					Name:       "Bank account",
 					Limit:      1000,
@@ -49,7 +49,7 @@ func TestSpec(t *testing.T) {
 				Description: "",
 				Amount:      0.0,
 				Date:        time.Now().AddDate(0, -1, -1),
-				Funding:     domain.Funding{},
+				Funding:     &domain.Funding{},
 			}
 
 			Convey("When I register the transaction", func() {

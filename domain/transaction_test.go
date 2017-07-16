@@ -13,7 +13,7 @@ func TestSpec(t *testing.T) {
 				Description: "4 beers",
 				Amount:      10.5,
 				Date:        time.Now(),
-				Funding: Funding{
+				Funding: &Funding{
 					ID:         "funding-id",
 					Name:       "Bank account",
 					Limit:      1000,
@@ -35,7 +35,7 @@ func TestSpec(t *testing.T) {
 				Description: "",
 				Amount:      0,
 				Date:        time.Now().AddDate(0, -1, -1),
-				Funding:     Funding{},
+				Funding:     &Funding{},
 			}
 
 			Convey("When I try to validate the transaction", func() {
@@ -67,7 +67,7 @@ func TestSpec(t *testing.T) {
 				Description: "4 beers",
 				Amount:      10.5,
 				Date:        time.Now(),
-				Funding: Funding{
+				Funding: &Funding{
 					Name:       "Bank account",
 					Limit:      1000,
 					Amount:     0,

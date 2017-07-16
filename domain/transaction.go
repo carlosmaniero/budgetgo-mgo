@@ -10,7 +10,7 @@ type Transaction struct {
 	Description string
 	Amount      float64
 	Date        time.Time
-	Funding     Funding
+	Funding     *Funding
 }
 
 // validateAmount is an amount validation
