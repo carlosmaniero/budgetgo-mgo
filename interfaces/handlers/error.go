@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/carlosmaniero/budgetgo/domain"
-	"github.com/carlosmaniero/budgetgo/interfaces/repositories/memoryrepository"
 	"github.com/carlosmaniero/budgetgo/interfaces/serializers"
 	"github.com/carlosmaniero/budgetgo/usecases"
 )
@@ -39,11 +38,6 @@ func (handlers *Handlers) getErrorResponse(err interface{}) serializers.ErrorRes
 		return serializers.ErrorResponseSerializer{
 			Type:    "parser",
 			Message: "cannot parse the sent date. Check the date format. Date Formate: " + time.RFC3339 + " (RFC3339)",
-		}
-	case *memoryrepository.MemoryMaxTransactionsError:
-		return serializers.ErrorResponseSerializer{
-			Type:    "server_error",
-			Message: err.Error(),
 		}
 	case error:
 		return serializers.ErrorResponseSerializer{
