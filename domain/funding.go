@@ -13,24 +13,24 @@ type Funding struct {
 	ClosingDay int
 }
 
-// ValidateName checks if the name is valid
-func (funding *Funding) ValidateName() error {
+// validateName checks if the name is valid
+func (funding *Funding) validateName() error {
 	if len(funding.Name) == 0 {
 		return &FieldValidationError{"Name", "can't be empty"}
 	}
 	return nil
 }
 
-// ValidateLimit checks if the limit is valid
-func (funding *Funding) ValidateLimit() error {
+// validateLimit checks if the limit is valid
+func (funding *Funding) validateLimit() error {
 	if funding.Limit < 0 {
 		return &FieldValidationError{"Limit", "can't be negative"}
 	}
 	return nil
 }
 
-// ValidateClosingDay checks if the closing day is valid
-func (funding *Funding) ValidateClosingDay() error {
+// validateClosingDay checks if the closing day is valid
+func (funding *Funding) validateClosingDay() error {
 	if funding.ClosingDay <= 0 {
 		return &FieldValidationError{"ClosingDay", "should be greater than zero"}
 	}
@@ -44,15 +44,15 @@ func (funding *Funding) ValidateClosingDay() error {
 func (funding *Funding) Validate() []error {
 	errors := make([]error, 0)
 
-	if err := funding.ValidateName(); err != nil {
+	if err := funding.validateName(); err != nil {
 		errors = append(errors, err)
 	}
 
-	if err := funding.ValidateLimit(); err != nil {
+	if err := funding.validateLimit(); err != nil {
 		errors = append(errors, err)
 	}
 
-	if err := funding.ValidateClosingDay(); err != nil {
+	if err := funding.validateClosingDay(); err != nil {
 		errors = append(errors, err)
 	}
 

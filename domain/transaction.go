@@ -13,24 +13,24 @@ type Transaction struct {
 	Funding     Funding
 }
 
-// ValidateAmount is an amount validation
-func (transaction *Transaction) ValidateAmount() error {
+// validateAmount is an amount validation
+func (transaction *Transaction) validateAmount() error {
 	if transaction.Amount == 0 {
 		return &FieldValidationError{"Amount", "can't be equal zero"}
 	}
 	return nil
 }
 
-// ValidateDescription is a description validation
-func (transaction *Transaction) ValidateDescription() error {
+// validateDescription is a description validation
+func (transaction *Transaction) validateDescription() error {
 	if len(transaction.Description) == 0 {
 		return &FieldValidationError{"Description", "can't be empty"}
 	}
 	return nil
 }
 
-// ValidateFunding valildate if the funding is valid and if it has an ID
-func (transaction *Transaction) ValidateFunding() error {
+// validateFunding valildate if the funding is valid and if it has an ID
+func (transaction *Transaction) validateFunding() error {
 	if transaction.Funding.Validate() != nil {
 		return &FieldValidationError{"Funding", "isn't valid"}
 	}
@@ -40,8 +40,8 @@ func (transaction *Transaction) ValidateFunding() error {
 	return nil
 }
 
-// ValidateDate is a date validation
-func (transaction *Transaction) ValidateDate() error {
+// validateDate is a date validation
+func (transaction *Transaction) validateDate() error {
 	dateLimit := time.Now().AddDate(0, -1, 0)
 
 	if transaction.Date.Before(dateLimit) {
@@ -55,19 +55,19 @@ func (transaction *Transaction) ValidateDate() error {
 func (transaction *Transaction) Validate() []error {
 	errors := make([]error, 0)
 
-	if err := transaction.ValidateAmount(); err != nil {
+	if err := transaction.validateAmount(); err != nil {
 		errors = append(errors, err)
 	}
 
-	if err := transaction.ValidateDescription(); err != nil {
+	if err := transaction.validateDescription(); err != nil {
 		errors = append(errors, err)
 	}
 
-	if err := transaction.ValidateFunding(); err != nil {
+	if err := transaction.validateFunding(); err != nil {
 		errors = append(errors, err)
 	}
 
-	if err := transaction.ValidateDate(); err != nil {
+	if err := transaction.validateDate(); err != nil {
 		errors = append(errors, err)
 	}
 
