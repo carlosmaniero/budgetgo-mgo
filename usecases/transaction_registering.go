@@ -20,7 +20,7 @@ func (iterator *TransactionInteractor) Register(description string, amount float
 	}
 
 	if errs := transaction.Validate(); errs != nil {
-		err := TransactionValidationErrors{errs}
+		err := ValidationErrors{errs}
 		return nil, &err
 	}
 
@@ -32,13 +32,4 @@ func (iterator *TransactionInteractor) Register(description string, amount float
 // TransactionRepository is the transaction repository specification
 type TransactionRepository interface {
 	Store(*domain.Transaction) string
-}
-
-// TransactionValidationErrors contains the validation errors of an transaction
-type TransactionValidationErrors struct {
-	Errors []error
-}
-
-func (err *TransactionValidationErrors) Error() string {
-	return "The transaction has validation errors"
 }

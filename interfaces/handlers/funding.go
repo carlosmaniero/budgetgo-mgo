@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/carlosmaniero/budgetgo/interfaces/serializers"
@@ -29,7 +28,7 @@ func (handlers *Handlers) FundingCreate(response http.ResponseWriter, request *h
 	)
 
 	if err != nil {
-		handlers.fundingCreateErrorHandler(err, response)
+		handlers.usecaseErrorHandler(err, response)
 		return
 	}
 
@@ -48,43 +47,17 @@ func (handlers *Handlers) FundingRetrieve(response http.ResponseWriter, request 
 	response.Header().Set("Content-Type", "application/json")
 
 	if err != nil {
-		errorData := serializers.ErrorResponseData{
+		serializer := serializers.ErrorResponseSerializer{
 			Type:    "not-found",
 			Message: err.Error(),
 		}
 
 		response.WriteHeader(http.StatusNotFound)
-		fmt.Fprint(response, string(serializers.SerializeErrorResponse(&errorData)))
+		response.Write(serializer.Serialize())
 		return
 	}
 
 	serializer := serializers.FundingSerializer{}
 	serializer.Loads(funding)
 	response.Write(serializer.Serialize())
-}
-
-// Error handler of the funding creation
-func (handlers *Handlers) fundingCreateErrorHandler(err error, response http.ResponseWriter) {
-	response.Header().Set("Content-Type", "application/json")
-	response.WriteHeader(http.StatusBadRequest)
-
-	switch err := err.(type) {
-	case *usecases.FundingValidationErrors:
-
-		serializer := serializers.FundingValidationErrorData{
-			Type:    "validation_error",
-			Message: err.Error(),
-			Errors:  handlers.convertFieldValidationErrors(err.Errors),
-		}
-		response.Write(serializer.Serialize())
-
-	default:
-		errorResponse := serializers.ErrorResponseData{
-			Type:    "domain_error",
-			Message: err.Error(),
-		}
-
-		data := serializers.SerializeErrorResponse(&errorResponse)
-		fmt.Fprint(response, string(data))
-	}
 }

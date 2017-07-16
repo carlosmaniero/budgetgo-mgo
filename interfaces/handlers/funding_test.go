@@ -40,7 +40,7 @@ func TestSpecFounding(t *testing.T) {
 				handlers.FundingCreate(&fundingResponse, &request, nil)
 
 				Convey("Then the funding was not created successly", func() {
-					So(fundingResponse.ResponseBody, ShouldContainSubstring, "The funding has validation errors")
+					So(fundingResponse.ResponseBody, ShouldContainSubstring, "This entity is not valid")
 					So(fundingResponse.StatusCode, ShouldEqual, 400)
 				})
 			})

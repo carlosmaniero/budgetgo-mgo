@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"github.com/carlosmaniero/budgetgo/domain"
 	"github.com/carlosmaniero/budgetgo/interfaces/serializers"
 	"github.com/carlosmaniero/budgetgo/usecases"
@@ -15,49 +14,23 @@ func (handlers *Handlers) TransactionCreate(response http.ResponseWriter, reques
 
 	iterator := usecases.TransactionInteractor{Repository: handlers.Application.TransactionRepository}
 	funding := domain.Funding{ID: "fake-funding", Name: "Default funding", Limit: 1000, Amount: 0, ClosingDay: 1}
+	serializer := serializers.TransactionResponseSerializer{}
 
-	data, err := serializers.UnserializeTransactionData(request.Body)
-
-	if err != nil {
+	if err := serializer.Unserialize(request.Body); err != nil {
 		handlers.unserializerErrorHandler(err, response)
 		return
 	}
 
-	transaction, err := iterator.Register(data.Description, data.Amount, data.Date, funding)
+	transaction, err := iterator.Register(serializer.Description, serializer.Amount, serializer.Date, funding)
 
 	if err != nil {
-		handlers.transactionCreateErrorHandler(err, response)
+		handlers.usecaseErrorHandler(err, response)
 		return
 	}
 
+	serializer.Loads(transaction)
+
 	response.WriteHeader(http.StatusCreated)
 	response.Header().Set("Content-Type", "application/json")
-	fmt.Fprint(response, string(serializers.SerializeTransaction(transaction)))
-}
-
-// This is the error handler of the transaction creation
-func (handlers *Handlers) transactionCreateErrorHandler(err error, response http.ResponseWriter) {
-	response.Header().Set("Content-Type", "application/json")
-	response.WriteHeader(http.StatusBadRequest)
-
-	switch err := err.(type) {
-	case *usecases.TransactionValidationErrors:
-
-		errorResponse := serializers.TransactionValidationErrorData{
-			Type:    "validation_error",
-			Message: err.Error(),
-			Errors:  handlers.convertFieldValidationErrors(err.Errors),
-		}
-
-		data := serializers.SerializeTransactionValidationError(&errorResponse)
-		fmt.Fprint(response, string(data))
-	default:
-		errorResponse := serializers.ErrorResponseData{
-			Type:    "domain_error",
-			Message: err.Error(),
-		}
-
-		data := serializers.SerializeErrorResponse(&errorResponse)
-		fmt.Fprint(response, string(data))
-	}
+	response.Write(serializer.Serialize())
 }

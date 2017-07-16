@@ -38,18 +38,3 @@ func (data *FundingSerializer) Serialize() []byte {
 	b, _ := json.Marshal(data)
 	return b
 }
-
-// FundingValidationErrorData is the serializable representaion of a Funding
-// validation error
-type FundingValidationErrorData struct {
-	Type    string            `json:"type"`
-	Message string            `json:"message"`
-	Errors  []*FieldErrorData `json:"errors"`
-}
-
-// Serialize returns a json string representation of an
-// FundingValidationErrorData
-func (data *FundingValidationErrorData) Serialize() []byte {
-	b, _ := json.Marshal(data)
-	return b
-}

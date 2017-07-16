@@ -41,7 +41,7 @@ func TestSpecTransaction(t *testing.T) {
 				handlers.TransactionCreate(&transactionResponse, &request, nil)
 
 				Convey("Then the transaction was not created successly", func() {
-					So(transactionResponse.ResponseBody, ShouldContainSubstring, "The transaction has validation errors")
+					So(transactionResponse.ResponseBody, ShouldContainSubstring, "This entity is not valid")
 					So(transactionResponse.StatusCode, ShouldEqual, 400)
 				})
 			})

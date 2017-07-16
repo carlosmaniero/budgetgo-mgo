@@ -21,7 +21,7 @@ func (iterator *FundingInteractor) Register(name string, amount float64, closing
 	}
 
 	if errs := funding.Validate(); errs != nil {
-		err := FundingValidationErrors{errs}
+		err := ValidationErrors{errs}
 		return nil, &err
 	}
 
@@ -49,14 +49,4 @@ var ErrFundingNotFound = errors.New("the funding was not found")
 type FundingRepository interface {
 	Store(*domain.Funding) string
 	FindByID(string) *domain.Funding
-}
-
-// FundingValidationErrors is the structure returned when the funding has
-// validation errors
-type FundingValidationErrors struct {
-	Errors []error
-}
-
-func (err *FundingValidationErrors) Error() string {
-	return "The funding has validation errors"
 }

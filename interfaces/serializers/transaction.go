@@ -7,57 +7,33 @@ import (
 	"time"
 )
 
-// TransactionData is the serializable representation of a Transaction Data
-//
-// This is used to parse the information sended to the Transaction creation
-// entrypoint
-type TransactionData struct {
-	Description string    `json:"description"`
-	Amount      float64   `json:"amount"`
-	Date        time.Time `json:"date"`
-}
-
-// TransactionResponseData is the serializable representation of a Transaction
-type TransactionResponseData struct {
+// TransactionResponseSerializer is the serializable representation of a Transaction
+type TransactionResponseSerializer struct {
 	ID          string    `json:"id"`
 	Description string    `json:"description"`
 	Amount      float64   `json:"amount"`
 	Date        time.Time `json:"date"`
 }
 
-// TransactionValidationErrorData is the serializable representaion of a
-// Transaction validation error
-type TransactionValidationErrorData struct {
-	Type    string            `json:"type"`
-	Message string            `json:"message"`
-	Errors  []*FieldErrorData `json:"errors"`
+// Loads the date of a Transaction
+func (data *TransactionResponseSerializer) Loads(transaction *domain.Transaction) {
+	data.ID = transaction.ID
+	data.Description = transaction.Description
+	data.Amount = transaction.Amount
+	data.Date = transaction.Date
 }
 
-// UnserializeTransactionData get an io.Reader and convert it to a TransactionData
+// Serialize to json string
+func (data *TransactionResponseSerializer) Serialize() []byte {
+	b, _ := json.Marshal(data)
+	return b
+}
+
+// Unserialize a json string representation
 //
 // This return an error if the input is not an valid json representation of
 // the TransactionData
-func UnserializeTransactionData(reader io.Reader) (*TransactionData, error) {
-	data := TransactionData{}
+func (data *TransactionResponseSerializer) Unserialize(reader io.Reader) error {
 	err := json.NewDecoder(reader).Decode(&data)
-	return &data, err
-}
-
-// SerializeTransaction receive a Transaction and return its string representation
-func SerializeTransaction(transaction *domain.Transaction) []byte {
-	data := TransactionResponseData{
-		ID:          transaction.ID,
-		Description: transaction.Description,
-		Amount:      transaction.Amount,
-		Date:        transaction.Date,
-	}
-	b, _ := json.Marshal(data)
-	return b
-}
-
-// SerializeTransactionValidationError returns a json string representation of a
-// TransactionValidationErrorData
-func SerializeTransactionValidationError(data *TransactionValidationErrorData) []byte {
-	b, _ := json.Marshal(data)
-	return b
+	return err
 }
