@@ -45,7 +45,7 @@ func (handlers *Handlers) TransactionCreate(response http.ResponseWriter, reques
 
 	serializer.Loads(&transaction)
 
-	response.WriteHeader(http.StatusCreated)
 	response.Header().Set("Content-Type", "application/json")
+	response.WriteHeader(http.StatusCreated)
 	response.Write(serializer.Serialize())
 }
