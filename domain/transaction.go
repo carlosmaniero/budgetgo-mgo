@@ -42,7 +42,7 @@ func (transaction *Transaction) validateFunding() error {
 
 // validateDate is a date validation
 func (transaction *Transaction) validateDate() error {
-	dateLimit := time.Now().AddDate(0, -1, 0)
+	dateLimit := time.Now().AddDate(-1, 0, 0)
 
 	if transaction.Date.Before(dateLimit) {
 		return &FieldValidationError{"Date", "can't be greater than one month"}

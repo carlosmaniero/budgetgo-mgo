@@ -34,7 +34,7 @@ func TestSpec(t *testing.T) {
 			transaction := Transaction{
 				Description: "",
 				Amount:      0,
-				Date:        time.Now().AddDate(0, -1, -1),
+				Date:        time.Now().AddDate(-1, 0, -1),
 				Funding:     &Funding{},
 			}
 
