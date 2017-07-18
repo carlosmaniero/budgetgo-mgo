@@ -24,7 +24,10 @@ func TestSpecTransaction(t *testing.T) {
 			ClosingDay: 2,
 			Limit:      3,
 		}
-		panic(fundingIteractor.Register(&funding))
+
+		if err := fundingIteractor.Register(&funding); err != nil {
+			panic(err)
+		}
 
 		Convey("Given I've a valid transaction json representation", func() {
 			now := time.Now().Format(time.RFC3339Nano)

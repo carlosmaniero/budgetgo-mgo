@@ -81,7 +81,9 @@ func TestSpecFundingRetrieve(t *testing.T) {
 		}
 
 		Convey("Given I've a registred funding", func() {
-			panic(iteractor.Register(&fundingCreated))
+			if err := iteractor.Register(&fundingCreated); err != nil {
+				panic(err)
+			}
 
 			Convey("When I retrieve the registred transaction", func() {
 				fundingRetrieved, _ := iteractor.Retrieve(fundingCreated.ID)
