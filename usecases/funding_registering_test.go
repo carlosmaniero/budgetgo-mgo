@@ -89,7 +89,7 @@ func TestSpecFundingRetrieve(t *testing.T) {
 				fundingRetrieved, _ := iteractor.Retrieve(fundingCreated.ID)
 
 				Convey("Then it is returned", func() {
-					So(fundingRetrieved, ShouldEqual, fundingCreated)
+					So(fundingRetrieved, ShouldEqual, &fundingCreated)
 					So(fundingCreated.ID, ShouldEqual, repository.findedID)
 				})
 			})

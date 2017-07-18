@@ -40,7 +40,7 @@ func TestSpecTransaction(t *testing.T) {
 				handlers.TransactionCreate(&transactionResponse, &request, nil)
 
 				Convey("Then the transaction was created successly", func() {
-					So(transactionResponse.ResponseBody, ShouldEqual, "{\"id\":\"1\",\"description\":\"8 beers\",\"amount\":10,\"date\":\""+now+"\"}")
+					So(transactionResponse.ResponseBody, ShouldEqual, "{\"id\":\"1\",\"description\":\"8 beers\",\"amount\":10,\"date\":\""+now+"\",\"funding_id\":\"1\"}")
 					So(transactionResponse.StatusCode, ShouldEqual, 201)
 				})
 			})
@@ -55,7 +55,7 @@ func TestSpecTransaction(t *testing.T) {
 				handlers.TransactionCreate(&transactionResponse, &request, nil)
 
 				Convey("Then the transaction was not created successly", func() {
-					So(transactionResponse.ResponseBody, ShouldContainSubstring, "This entity is not valid")
+					So(transactionResponse.ResponseBody, ShouldContainSubstring, "the funding was not found")
 					So(transactionResponse.StatusCode, ShouldEqual, 400)
 				})
 			})
