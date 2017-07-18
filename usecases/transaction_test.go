@@ -67,16 +67,59 @@ func TestSpec(t *testing.T) {
 			})
 		})
 	})
+	Convey("Scenario: Consulting a transaction", t, func() {
+		Convey("Given I've a created transaction", func() {
+			createdTransaction := domain.Transaction{
+				Description: "4 beers",
+				Amount:      24.99,
+				Date:        time.Now(),
+				Funding: &domain.Funding{
+					ID:         "funding-id",
+					Name:       "Bank account",
+					Limit:      1000,
+					Amount:     0,
+					ClosingDay: 1,
+				},
+			}
+			repository := transactionRepository{storedTotal: 0, expectedTransaction: &createdTransaction}
+			iterator := TransactionInteractor{Repository: &repository}
+			iterator.Register(&createdTransaction)
+
+			Convey("When I retrieve it", func() {
+				transaction, _ := iterator.Retrieve(createdTransaction.ID)
+
+				Convey("Then I receive my created transaction", func() {
+					So(transaction, ShouldEqual, &createdTransaction)
+				})
+			})
+
+			Convey("When I retrieve a nonexistent transaction", func() {
+				repository.lastStored = nil
+				transaction, err := iterator.Retrieve("invalid-id")
+
+				Convey("Then I receive my created transaction", func() {
+					So(transaction, ShouldBeNil)
+					So(err, ShouldEqual, ErrTransactionNotFound)
+				})
+			})
+		})
+	})
 }
 
 // Mocked Repository
 type transactionRepository struct {
 	storedTotal         int
 	expectedTransaction *domain.Transaction
+	lastStored          *domain.Transaction
 }
 
 func (t *transactionRepository) Store(transaction *domain.Transaction) string {
 	t.storedTotal++
 	So(transaction, ShouldEqual, t.expectedTransaction)
+	t.lastStored = transaction
 	return strconv.Itoa(t.storedTotal)
+}
+
+func (t *transactionRepository) FindByID(string) *domain.Transaction {
+	return t.lastStored
 }

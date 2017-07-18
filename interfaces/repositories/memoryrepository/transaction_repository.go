@@ -27,6 +27,11 @@ func (repository *MemoryTransactionRepository) Store(transaction *domain.Transac
 	return id
 }
 
+// FindByID returns an transaction by ID
+func (repository *MemoryTransactionRepository) FindByID(ID string) *domain.Transaction {
+	return nil
+}
+
 // NewMemoryTransactionRepository Create a new transaction memory repository
 func NewMemoryTransactionRepository() usecases.TransactionRepository {
 	return &MemoryTransactionRepository{transactions: make([]*domain.Transaction, 0)}
