@@ -2,7 +2,7 @@ package domain
 
 // Funding is the entity representation of an Account Funding
 //
-// An exemple of a Funding is a "Credit Card". In a credit card we have
+// An example of a Funding is a "Credit Card". In a credit card we have
 // a limit of credit, the amount (the total of used credit) and a closing day
 // (the invoice closure).
 type Funding struct {

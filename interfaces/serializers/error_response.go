@@ -12,7 +12,7 @@ type FieldErrorData struct {
 	Message string `json:"message"`
 }
 
-// ValidationErrorData is the serializable representaion of a Funding
+// ValidationErrorData is the serializable representation of a Funding
 // validation error
 type ValidationErrorData struct {
 	Type    string            `json:"type"`
@@ -29,7 +29,7 @@ func (data *ValidationErrorData) Serialize() []byte {
 
 // ErrorResponseSerializer is the representation of an system error response
 //
-// The type can be by exemple; "not-found"
+// The type can be by example; "not-found"
 // And the message: "The entity was not found"
 type ErrorResponseSerializer struct {
 	Type    string `json:"type"`

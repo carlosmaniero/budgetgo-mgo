@@ -24,7 +24,7 @@ func TestSpecFundingRegistering(t *testing.T) {
 
 				err := iterator.Register(&funding)
 
-				Convey("Then The funding was registered succesfully", func() {
+				Convey("Then The funding was registered successfully", func() {
 					So(err, ShouldBeNil)
 				})
 
@@ -57,7 +57,7 @@ func TestSpecFundingRegistering(t *testing.T) {
 
 				err := iterator.Register(&funding)
 
-				Convey("Then The funding was registered succesfully", func() {
+				Convey("Then The funding was registered successfully", func() {
 					So(err, ShouldNotBeNil)
 				})
 

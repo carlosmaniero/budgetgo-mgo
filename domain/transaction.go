@@ -4,7 +4,7 @@ import "time"
 
 // Transaction is a transaction representation
 //
-// An exemple of a transaction is a purshase on credit card
+// An example of a transaction is a purshase on credit card
 type Transaction struct {
 	ID          string
 	Description string
