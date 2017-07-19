@@ -49,3 +49,28 @@ func (handlers *Handlers) TransactionCreate(response http.ResponseWriter, reques
 	response.WriteHeader(http.StatusCreated)
 	response.Write(serializer.Serialize())
 }
+
+// TransactionRetrieve is the handler that gets an transaction
+func (handlers *Handlers) TransactionRetrieve(response http.ResponseWriter, request *http.Request, params httprouter.Params) {
+	id := params.ByName("id")
+
+	iterator := usecases.TransactionInteractor{Repository: handlers.Application.TransactionRepository}
+	transaction, err := iterator.Retrieve(id)
+
+	if err != nil {
+		serializer := serializers.ErrorResponseSerializer{
+			Type:    "not-found",
+			Message: err.Error(),
+		}
+
+		response.WriteHeader(http.StatusNotFound)
+		response.Write(serializer.Serialize())
+		return
+	}
+
+	serializer := serializers.TransactionResponseSerializer{}
+	serializer.Loads(transaction)
+	response.Header().Set("Content-Type", "application/json")
+	response.WriteHeader(http.StatusOK)
+	response.Write(serializer.Serialize())
+}

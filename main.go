@@ -14,6 +14,7 @@ func main() {
 	router := httprouter.New()
 
 	router.POST("/transaction", appHandlers.TransactionCreate)
+	router.GET("/transaction/:id", appHandlers.TransactionRetrieve)
 	router.GET("/funding/:id", appHandlers.FundingRetrieve)
 	router.POST("/funding", appHandlers.FundingCreate)
 	log.Fatal(http.ListenAndServe(":8123", router))

@@ -28,8 +28,14 @@ func (repository *MemoryTransactionRepository) Store(transaction *domain.Transac
 }
 
 // FindByID returns an transaction by ID
-func (repository *MemoryTransactionRepository) FindByID(ID string) *domain.Transaction {
-	return nil
+func (repository *MemoryTransactionRepository) FindByID(id string) *domain.Transaction {
+	index, err := strconv.Atoi(id)
+
+	if err != nil || len(repository.transactions) < index {
+		return nil
+	}
+
+	return repository.transactions[index-1]
 }
 
 // NewMemoryTransactionRepository Create a new transaction memory repository
