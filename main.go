@@ -1,15 +1,23 @@
 package main
 
 import (
+	"log"
+	"net/http"
+
 	"github.com/carlosmaniero/budgetgo/interfaces/application"
 	"github.com/carlosmaniero/budgetgo/interfaces/handlers"
 	"github.com/julienschmidt/httprouter"
-	"log"
-	"net/http"
+	mgo "gopkg.in/mgo.v2"
 )
 
 func main() {
-	app := application.New()
+	session, err := mgo.Dial("localhost")
+	if err != nil {
+		panic(err)
+	}
+	defer session.Close()
+
+	app := application.NewWithMongo(session)
 	appHandlers := handlers.Handlers{Application: app}
 	router := httprouter.New()
 
