@@ -1,11 +1,12 @@
 package handlers
 
 import (
+	"net/http"
+
 	"github.com/carlosmaniero/budgetgo/domain"
 	"github.com/carlosmaniero/budgetgo/interfaces/serializers"
 	"github.com/carlosmaniero/budgetgo/usecases"
 	"github.com/julienschmidt/httprouter"
-	"net/http"
 )
 
 // TransactionCreate is the handler of the transaction creation entrypoint

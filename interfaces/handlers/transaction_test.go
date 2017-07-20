@@ -41,7 +41,7 @@ func TestSpecTransaction(t *testing.T) {
 				handlers.TransactionCreate(&transactionResponse, &request, nil)
 
 				Convey("Then the transaction was created successly", func() {
-					So(transactionResponse.ResponseBody, ShouldEqual, "{\"id\":\"1\",\"description\":\"8 beers\",\"amount\":10,\"date\":\""+now+"\",\"funding_id\":\"1\"}")
+					So(transactionResponse.ResponseBody, ShouldEqual, "{\"id\":\"1\",\"description\":\"8 beers\",\"amount\":10,\"date\":\""+now+"\",\"funding_id\":\"1\",\"funding\":{\"id\":\"1\",\"name\":\"Beer account\",\"limit\":3,\"amount\":1,\"closing_day\":2}}")
 					So(transactionResponse.StatusCode, ShouldEqual, 201)
 				})
 			})
@@ -100,7 +100,7 @@ func TestSpecTransaction(t *testing.T) {
 				handlers.TransactionRetrieve(&transactionResponse, &request, params)
 
 				Convey("Then the transaction is returned", func() {
-					So(transactionResponse.ResponseBody, ShouldContainSubstring, "{\"id\":\"1\",\"description\":\"Golpher Shampoo\",\"amount\":25.5,\"date\":\""+transaction.Date.Format(time.RFC3339Nano)+"\"}")
+					So(transactionResponse.ResponseBody, ShouldContainSubstring, "{\"id\":\"1\",\"description\":\"Golpher Shampoo\",\"amount\":25.5,\"date\":\""+transaction.Date.Format(time.RFC3339Nano)+"\",\"funding_id\":\"1\",\"funding\":{\"id\":\"1\",\"name\":\"Pet account\",\"limit\":3,\"amount\":1,\"closing_day\":2}}")
 				})
 			})
 
