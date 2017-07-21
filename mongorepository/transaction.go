@@ -50,8 +50,29 @@ func (repository *MongoTransactionRepository) FindByID(id string) *domain.Transa
 }
 
 // FindByFundingAndInterval find transactions by funding in a determined interval
-func (repository *MongoTransactionRepository) FindByFundingAndInterval(*domain.Funding, time.Time, time.Time) usecases.TransactionList {
-	panic("not implemented")
+func (repository *MongoTransactionRepository) FindByFundingAndInterval(funding *domain.Funding, start time.Time, end time.Time) usecases.TransactionList {
+	iter := repository.Collection.Find(bson.M{
+		"date": bson.M{
+			"$gte": start,
+			"$lt":  end,
+		},
+		"funding_id": bson.ObjectIdHex(funding.ID),
+	}).Sort("date").Iter()
+
+	return &transactionIter{iter}
+}
+
+type transactionIter struct {
+	mongoIterator *mgo.Iter
+}
+
+func (iter *transactionIter) Next(transaction *domain.Transaction) bool {
+	data := transactionData{}
+	if ok := iter.mongoIterator.Next(&data); !ok {
+		return false
+	}
+	data.gets(transaction)
+	return true
 }
 
 type transactionData struct {
@@ -60,6 +81,7 @@ type transactionData struct {
 	Amount      float64       `bson:"amount"`
 	Date        time.Time     `bson:"date"`
 	Funding     *fundingData  `bson:"funding"`
+	FundingID   bson.ObjectId `bson:"funding_id"`
 }
 
 func (data *transactionData) puts(transaction *domain.Transaction) {
@@ -72,6 +94,7 @@ func (data *transactionData) puts(transaction *domain.Transaction) {
 	funding := fundingData{}
 	funding.puts(transaction.Funding)
 	data.Funding = &funding
+	data.FundingID = funding.ID
 }
 
 func (data *transactionData) gets(transaction *domain.Transaction) {
