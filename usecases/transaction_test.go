@@ -121,7 +121,7 @@ func TestSpec(t *testing.T) {
 				Convey("Then the use case query correctly the repository", func() {
 					So(repository.findedFunding, ShouldEqual, &funding)
 					So(repository.findedStart.Unix(), ShouldEqual, time.Date(2017, time.Month(6), 1, 0, 0, 0, 0, time.Local).Unix())
-					So(repository.findedEnd.Unix(), ShouldEqual, time.Date(2017, time.Month(6), 30, 0, 0, 0, 0, time.Local).Unix())
+					So(repository.findedEnd.Unix(), ShouldEqual, time.Date(2017, time.Month(7), 1, 0, 0, 0, 0, time.Local).Unix())
 				})
 			})
 		})

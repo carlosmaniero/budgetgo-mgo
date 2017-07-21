@@ -47,7 +47,7 @@ func (iterator *TransactionInteractor) RetriveByFundingMonth(funding *domain.Fun
 		return nil, ErrInvalidMonth
 	}
 	start := time.Date(year, time.Month(month), 1, 0, 0, 0, 0, time.Local)
-	end := start.AddDate(0, 1, -1)
+	end := start.AddDate(0, 1, 0)
 	return iterator.Repository.FindByFundingAndInterval(funding, start, end), nil
 }
 
