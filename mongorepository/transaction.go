@@ -23,7 +23,9 @@ func (repository *MongoTransactionRepository) Store(transaction *domain.Transact
 	model.puts(transaction)
 	model.ID = bid
 
-	repository.Collection.Insert(model)
+	if err := repository.Collection.Insert(model); err != nil {
+		panic(err)
+	}
 	return bid.Hex()
 }
 
