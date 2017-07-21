@@ -47,6 +47,11 @@ func (repository *MongoTransactionRepository) FindByID(id string) *domain.Transa
 	return &transaction
 }
 
+// FindByFundingAndInterval find transactions by funding in a determined interval
+func (repository *MongoTransactionRepository) FindByFundingAndInterval(*domain.Funding, time.Time, time.Time) usecases.TransactionList {
+	panic("not implemented")
+}
+
 type transactionData struct {
 	ID          bson.ObjectId `bson:"_id"`
 	Description string        `bson:"description"`

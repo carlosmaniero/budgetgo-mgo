@@ -104,6 +104,49 @@ func TestSpec(t *testing.T) {
 			})
 		})
 	})
+	Convey("Scenario: Consulting the list of transactions in a month", t, func() {
+		Convey("Given I've a valid date and funding", func() {
+			Convey("When I try to get the transaction list", func() {
+				repository := transactionRepository{}
+				iterator := TransactionInteractor{Repository: &repository}
+				funding := domain.Funding{
+					ID:         "funding-id",
+					Name:       "Bank account",
+					Limit:      1000,
+					Amount:     0,
+					ClosingDay: 1,
+				}
+				iterator.RetriveByFundingMonth(&funding, 2017, 6)
+
+				Convey("Then the use case query correctly the repository", func() {
+					So(repository.findedFunding, ShouldEqual, &funding)
+					So(repository.findedStart.Unix(), ShouldEqual, time.Date(2017, time.Month(6), 1, 0, 0, 0, 0, time.Local).Unix())
+					So(repository.findedEnd.Unix(), ShouldEqual, time.Date(2017, time.Month(6), 30, 0, 0, 0, 0, time.Local).Unix())
+				})
+			})
+		})
+
+		Convey("Given I've a invalid month", func() {
+			Convey("When I try to get the transaction list", func() {
+				repository := transactionRepository{}
+				iterator := TransactionInteractor{Repository: &repository}
+				funding := domain.Funding{
+					ID:         "funding-id",
+					Name:       "Bank account",
+					Limit:      1000,
+					Amount:     0,
+					ClosingDay: 1,
+				}
+				_, err1 := iterator.RetriveByFundingMonth(&funding, 2017, 13)
+				_, err2 := iterator.RetriveByFundingMonth(&funding, 2017, 0)
+
+				Convey("When an error is returned", func() {
+					So(err1, ShouldEqual, ErrInvalidMonth)
+					So(err2, ShouldEqual, ErrInvalidMonth)
+				})
+			})
+		})
+	})
 }
 
 // Mocked Repository
@@ -111,6 +154,9 @@ type transactionRepository struct {
 	storedTotal         int
 	expectedTransaction *domain.Transaction
 	lastStored          *domain.Transaction
+	findedFunding       *domain.Funding
+	findedStart         time.Time
+	findedEnd           time.Time
 }
 
 func (t *transactionRepository) Store(transaction *domain.Transaction) string {
@@ -122,4 +168,11 @@ func (t *transactionRepository) Store(transaction *domain.Transaction) string {
 
 func (t *transactionRepository) FindByID(string) *domain.Transaction {
 	return t.lastStored
+}
+
+func (t *transactionRepository) FindByFundingAndInterval(funding *domain.Funding, start time.Time, end time.Time) TransactionList {
+	t.findedFunding = funding
+	t.findedStart = start
+	t.findedEnd = end
+	return nil
 }

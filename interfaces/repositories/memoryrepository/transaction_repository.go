@@ -3,6 +3,7 @@ package memoryrepository
 import (
 	"strconv"
 	"sync"
+	"time"
 
 	"github.com/carlosmaniero/budgetgo/domain"
 	"github.com/carlosmaniero/budgetgo/usecases"
@@ -36,6 +37,11 @@ func (repository *MemoryTransactionRepository) FindByID(id string) *domain.Trans
 	}
 
 	return repository.transactions[index-1]
+}
+
+// FindByFundingAndInterval find transactions by funding in a determined interval
+func (repository *MemoryTransactionRepository) FindByFundingAndInterval(*domain.Funding, time.Time, time.Time) usecases.TransactionList {
+	panic("not implemented")
 }
 
 // NewMemoryTransactionRepository Create a new transaction memory repository
