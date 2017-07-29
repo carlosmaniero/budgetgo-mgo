@@ -18,6 +18,7 @@ var transaction = domain.Transaction{
 		ID:         bson.NewObjectId().Hex(),
 		Amount:     100,
 		ClosingDay: 1,
+		PaymentDay: 1,
 		Limit:      10,
 		Name:       "Bank account",
 	},

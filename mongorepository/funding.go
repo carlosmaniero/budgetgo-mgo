@@ -1,6 +1,8 @@
 package mongorepository
 
 import (
+	"time"
+
 	"github.com/carlosmaniero/budgetgo/domain"
 	"github.com/carlosmaniero/budgetgo/usecases"
 	mgo "gopkg.in/mgo.v2"
@@ -23,6 +25,25 @@ func (repository *MongoFundingRepository) Store(funding *domain.Funding) string 
 
 	repository.Collection.Insert(data)
 	return bid.Hex()
+}
+
+// FindByPeriod returns funding in a specific period
+func (repository *MongoFundingRepository) FindByPeriod(start time.Time, end time.Time) (result []*domain.Funding) {
+	posibleDays := make([]int, 0)
+	initialDate := start.AddDate(0, 0, 0)
+
+	for initialDate.Before(end) {
+		posibleDays = append(posibleDays, initialDate.Day())
+		initialDate = initialDate.AddDate(0, 0, 1)
+	}
+
+	query := repository.Collection.Find(bson.M{
+		"payment_day": bson.M{
+			"$in": posibleDays,
+		},
+	})
+	query.All(&result)
+	return
 }
 
 // FindByID returns one funding to the database
@@ -54,6 +75,7 @@ type fundingData struct {
 	Name       string        `bson:"name"`
 	Amount     float64       `bson:"amount"`
 	ClosingDay int           `bson:"closing_day"`
+	PaymentDay int           `bson:"payment_day"`
 }
 
 func (data *fundingData) gets(funding *domain.Funding) {
@@ -61,6 +83,7 @@ func (data *fundingData) gets(funding *domain.Funding) {
 	funding.Name = data.Name
 	funding.Amount = data.Amount
 	funding.ClosingDay = data.ClosingDay
+	funding.PaymentDay = data.PaymentDay
 }
 
 func (data *fundingData) puts(funding *domain.Funding) {
@@ -70,4 +93,5 @@ func (data *fundingData) puts(funding *domain.Funding) {
 	data.Name = funding.Name
 	data.Amount = funding.Amount
 	data.ClosingDay = funding.ClosingDay
+	data.PaymentDay = funding.PaymentDay
 }
