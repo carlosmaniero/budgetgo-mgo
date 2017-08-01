@@ -37,12 +37,19 @@ func (repository *MongoFundingRepository) FindByPeriod(start time.Time, end time
 		initialDate = initialDate.AddDate(0, 0, 1)
 	}
 
-	query := repository.Collection.Find(bson.M{
+	iterator := repository.Collection.Find(bson.M{
 		"payment_day": bson.M{
 			"$in": posibleDays,
 		},
-	})
-	query.All(&result)
+	}).Iter()
+
+	data := new(fundingData)
+	for iterator.Next(data) {
+		funding := new(domain.Funding)
+		data.gets(funding)
+		result = append(result, funding)
+	}
+
 	return
 }
 
